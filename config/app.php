@@ -180,11 +180,13 @@ return [
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
-        Illuminate\View\ViewServiceProvider::class,
+        Illuminate\View\ViewServiceProvider::class,        
 
         /*
          * Package Service Providers...
          */
+
+        PulkitJalan\Google\GoogleServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -209,7 +211,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Google' => PulkitJalan\Google\Facades\Google::class,
     ])->toArray(),
 
 ];
