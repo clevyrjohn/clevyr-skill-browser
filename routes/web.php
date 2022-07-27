@@ -36,9 +36,9 @@ Route::get('/', function () {
 Route::get('/import', [SpreadsheetController::class, 'import']);
 Route::post('/import', [SpreadsheetController::class, 'store']);
 
-Route::get('/c/{category}', [CategoryController::class, 'show']);
-Route::get('/h/{human}', [HumanController::class, 'show']);
-Route::get('/s/{skill}', [SkillController::class, 'show']);
+Route::get('/c/{category}', [CategoryController::class, 'show'])->name('category.show');
+Route::get('/h/{human}', [HumanController::class, 'show'])->name('human.show');
+Route::get('/s/{skill}', [SkillController::class, 'show'])->name('skill.show');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
