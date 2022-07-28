@@ -8,8 +8,6 @@ class HumanSkill extends Pivot
 {
     protected $fillable = ['human_id','skill_id','level'];
 
-    protected $with = ['human','skill'];
-
     public function human()
     {
         return $this->belongsTo(Human::class);

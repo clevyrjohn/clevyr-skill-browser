@@ -24,12 +24,17 @@ use App\Models\HumanSkill;
 */
 
 Route::get('/', function () {
+
+    $categories = Category::all()->append(['topHumans','companyTotal'])->load(['skills']);
+    $skills = Skill::all()->append(['companyTotal']);//->load('humans','humans.human');
+    $humans = Human::all()->append('totalScore');//->load(['skills','skills.skill']);
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
-        'categories' => Category::all(),
-        'skills' => Skill::all(),
-        'humans' => Human::all(),
+        'categories' => $categories,
+        'humans' => $humans,
+        'skills' => $skills,        
     ]);
 });
 

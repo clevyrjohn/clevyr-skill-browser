@@ -11,7 +11,7 @@ class SkillController extends Controller
     public function show(Skill $skill)
     {
         return inertia('Skill', [
-            'skill' => $skill->load('humans'),
+            'skill' => $skill->load('humans', 'humans.human'),
         ]);
     }
 }
