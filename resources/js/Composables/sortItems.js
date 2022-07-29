@@ -33,3 +33,15 @@ export function sortByCompanyTotalAsc(a,b) {
     if(a.companyTotal < b.companyTotal) return -1;
     return 0;
 }
+
+export function sortByTotalScoreDesc(a,b) {
+    if(a.totalScore > b.totalScore) return -1;
+    if(a.totalScore < b.totalScore) return 1;
+    return 0;
+}
+
+export function sortByTotalScoreAsc(a,b) {
+    if(a.totalScore > b.totalScore) return 1;
+    if(a.totalScore < b.totalScore) return -1;
+    return 0;
+}

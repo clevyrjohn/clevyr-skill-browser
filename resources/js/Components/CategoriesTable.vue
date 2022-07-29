@@ -1,7 +1,7 @@
 <script setup>
 import { ref, reactive } from 'vue';
-import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { Link } from '@inertiajs/inertia-vue3';
+import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { 
     sortByNameDesc,
     sortByNameAsc,

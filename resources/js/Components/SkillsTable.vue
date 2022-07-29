@@ -1,7 +1,14 @@
 <script setup>
-import { reactive } from 'vue';
-import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/vue/solid';
+import { ref, reactive } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
+import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
+import { 
+    sortByNameDesc,
+    sortByNameAsc,
+    sortByCompanyTotalDesc,
+    sortByCompanyTotalAsc 
+} from '@/Composables/sortItems';
+
 
 const props = defineProps({
     skills: Array,
@@ -17,16 +24,42 @@ for (const category of props.skills) {
 
 displayRows = reactive(displayRows);
 
+const sortingAlgorithm = ref(sortByNameAsc);
+
+function sortByName() {
+    sortingAlgorithm.value = sortingAlgorithm.value === sortByNameAsc ? sortByNameDesc : sortByNameAsc;
+}
+
+function sortByCompanyTotal() {
+    sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
+}
+
 </script>
 
 <template>
 <table class="relative z-40 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
         <!-- <th class=""></th> -->
-        <th class="text-left">Name</th>
-        <th class="text-right">Total Score</th>
+        <th class="text-left" @click="sortByName">
+            Name
+            <ChevronDownIcon
+                v-show="sortingAlgorithm === sortByNameAsc"
+                class="h-7 w-7 inline" />
+            <ChevronUpIcon
+                v-show="sortingAlgorithm === sortByNameDesc"
+                class="h-7 w-7 inline" />
+        </th>
+        <th class="text-right" @click="sortByCompanyTotal">
+            <ChevronDownIcon
+                v-show="sortingAlgorithm === sortByCompanyTotalDesc"
+                class="h-7 w-7 inline" />
+            <ChevronUpIcon
+                v-show="sortingAlgorithm === sortByCompanyTotalAsc"
+                class="h-7 w-7 inline" />
+            Total Score
+        </th>
     </thead>
-    <template v-for="skill in skills" :key="skill.id" class="static">
+    <template v-for="skill in skills.sort(sortingAlgorithm)" :key="skill.id" class="static">
         <tr class="static z-40 text-lg">
             <!-- <td class="cursor-pointer" @click="displayRows.skills[skill.id] = !displayRows.skills[skill.id]">
                 <ChevronRightIcon class="h-7 mr-[-11px]" v-if="displayRows.skills[skill.id] === false" />
@@ -51,17 +84,3 @@ displayRows = reactive(displayRows);
     </template>
 </table>
 </template>
-
-<style scoped>
-.slide-enter-active {
-    transition: all 0.15s ease-out;
-}
-.slide-leave-active {
-    transition: all 0.15s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-enter-from,
-.slide-leave-to {
-    transform: translateY(-2%);
-    opacity: 0;
-}
-</style>
