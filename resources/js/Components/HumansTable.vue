@@ -1,6 +1,6 @@
 <script setup>
-import { reactive } from 'vue';
-import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/vue/solid';
+import { ref, reactive } from 'vue';
+// import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { Link } from '@inertiajs/inertia-vue3';
 
 const props = defineProps({
@@ -16,6 +16,8 @@ for (const human of props.humans) {
 }
 
 displayRows = reactive(displayRows);
+
+
 
 </script>
 
@@ -47,7 +49,7 @@ displayRows = reactive(displayRows);
                     </table>
                 </td>
             </tr>
-        </transition>                         -->
+        </transition> -->
     </template>
 </table>
 </template>
