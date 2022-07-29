@@ -6,7 +6,7 @@ You'll need (1) Docker Desktop running, (2) access to Anne S's Clevyr Skill Inve
 
 After setting up your service account, download the credentials JSON file and place it in the `/storage` folder.
 
-With that done, clone this repository and copy `.env.example` to `.env` then configure `.env` with your environment variables.
+With that done, clone this repository and copy `.env.example` to `.env` then configure that last four lines of `.env` with your Google API variables.
 
 In your terminal, `cd` into the repository's root directory. Then type:
 
