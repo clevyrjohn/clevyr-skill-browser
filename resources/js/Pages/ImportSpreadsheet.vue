@@ -6,11 +6,18 @@ const props = defineProps({
     sheet: {
         type: Array,
         required: true,
+    },
+    colors: {
+        type: Object,
+        required: true,
     }
 })
 
 const categories = props.sheet[0].slice(1,(props.sheet[0].length-2));
 categories.unshift("");
+
+const justCategoryNames = categories.filter(category => category);
+
 const skills = props.sheet[2].slice(0);
 const humans = props.sheet.slice(4,props.sheet.length-21).map(arr => arr.slice(0,arr.length-2));
 
@@ -36,7 +43,17 @@ function submit() {
     </form>
     <table>
         <tr>
-            <td v-for="category, index in categories" :key="index">{{ `${category}` }}</td>
+            <td></td>
+            <td 
+                v-for="category, index in categories.filter(category => category)" 
+                :key="index"
+                :style="colors[category] ? `background-color: #${colors[category]};` : ''"
+                :colspan="(
+                    categories.indexOf(justCategoryNames[index+1]) !== -1 ? categories.indexOf(justCategoryNames[index+1]) : categories.length) - categories.indexOf(justCategoryNames[index]
+                )"
+            >
+                {{ `${category}` }}
+            </td>
         </tr>
         <tr>
             <td v-for="skill, index in skills" :key="index">{{ `${skill}` }}</td>

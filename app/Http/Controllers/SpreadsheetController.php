@@ -12,12 +12,25 @@ use App\Models\HumanSkill;
 
 class SpreadsheetController extends Controller
 {
+
+    public $colors = [
+        'Back End Developer Tools and Skills' => 'F7CB4D',
+        'Front End Developer Tools and Skills' => '4DD0E1',
+        'Mobile Development Tools and Skills' => 'F46524',
+        'Dev Ops Tools and Skills' => 'AB6ED4',
+        'Data Science Tools & Skills' => '34A853',
+        'Quality Assurance & Testing Tools' => 'CC4125',
+        'Information Security General Skills' => '999999',
+        'Creative Tools and Skills' => '8BC64A',
+    ];
+
     public function import(Request $request)
     {
         $sheet = Sheets::spreadsheet(env('GOOGLE_SHEET_ID'))->sheet('Team Members by Skill')->all();
 
         return inertia('ImportSpreadsheet', [            
             'sheet' => $sheet,
+            'colors' => $this->colors,
         ]);
     }
 
@@ -26,9 +39,11 @@ class SpreadsheetController extends Controller
         $categoryIndices = [];
         foreach($request->categories as $key=>$category) {
             if ($category != "") {                
-                Category::firstOrCreate([
-                    'name' => $category
-                ]);               
+                Category::updateOrCreate([
+                    'name' => $category,
+                ], [
+                    'color' => $this->colors[$category],
+                ]);
                 array_push($categoryIndices, $key); 
             }
         }
@@ -53,9 +68,7 @@ class SpreadsheetController extends Controller
             ]);
             
             foreach($human as $key=>$skillLevel) {
-                // error_log($skillLevel);                
-                if ($key > 0) {
-                    // error_log($key);
+                if ($key > 0) {                    
                     HumanSkill::firstOrCreate([
                         'human_id' => $db->id,
                         'skill_id' => $key,
