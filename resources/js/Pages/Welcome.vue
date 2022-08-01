@@ -34,6 +34,7 @@ for (const skill of props.skills) {
 }
 
 displayRows = reactive(displayRows);
+
 </script>
 
 

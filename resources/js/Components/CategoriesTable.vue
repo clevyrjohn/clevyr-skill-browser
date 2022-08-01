@@ -8,6 +8,7 @@ import {
     sortByCompanyTotalDesc, 
     sortByCompanyTotalAsc 
 } from '@/Composables/sortItems';
+import PolarAreaChart from './polarAreaChart';
 
 const props = defineProps({
     categories: Array,
@@ -36,7 +37,8 @@ function sortByCompanyTotal() {
 </script>
 
 <template>
-<table class="relative z-40 border-separate border-spacing-1 w-full">
+<PolarAreaChart :data="categories" />
+<table class="relative mt-14 z-40 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
         <th class=""></th>
         <th class="text-left" @click="sortByName">
