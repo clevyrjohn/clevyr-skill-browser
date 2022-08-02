@@ -1,5 +1,5 @@
 import { defineComponent, h } from 'vue'
-import { hexToRgbA } from '@/Composables/hexToRgbA'
+
 import { PolarArea } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -22,6 +22,10 @@ export default defineComponent({
       type: String,
       default: 'polar-chart'
     },
+    chartData: {
+      type: Object,
+      default: {},
+    },
     width: {
       type: Number,
       default: 300
@@ -34,31 +38,27 @@ export default defineComponent({
       default: '',
       type: String
     },
+    labels: {
+      default: [],
+      type: Array,
+    },
     data: {
+      default: [],
+      type: Array,
+    },
+    backgroundColor: {
       default: [],
       type: Array,
     }
   },
   setup(props) {
-
-    // console.log();
-    const chartData = {
-      labels: props.data.map(el => el.name),
-      datasets: [
-        {
-          label: 'Company Skills by Category',
-          data: props.data.map(el => el.companyTotal),
-          backgroundColor: props.data.map(el => hexToRgbA('#'+el.color,0.5))
-        },
-      ]
-    }
-
     const chartOptions = {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
         r: {
           ticks: {
+            display: false,
             backdropColor: 'rgba(0,0,0,0)',
             color: '#fff',
           },
@@ -79,10 +79,9 @@ export default defineComponent({
         },
       }
     }
-
     return () =>
       h(PolarArea, {
-        chartData,
+        chartData: props.chartData,
         chartOptions,
         chartId: props.chartId,
         width: props.width,

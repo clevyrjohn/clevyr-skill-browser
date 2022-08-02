@@ -45,3 +45,4 @@ export function sortByTotalScoreAsc(a,b) {
     if(a.totalScore < b.totalScore) return -1;
     return 0;
 }
+

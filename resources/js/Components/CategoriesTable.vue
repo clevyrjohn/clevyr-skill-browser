@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { 
@@ -8,7 +8,8 @@ import {
     sortByCompanyTotalDesc, 
     sortByCompanyTotalAsc 
 } from '@/Composables/sortItems';
-import PolarAreaChart from './polarAreaChart';
+import { hexToRgbA } from '@/Composables/hexToRgbA'
+import PolarAreaChart from './Charts/polarAreaChart';
 
 const props = defineProps({
     categories: Array,
@@ -34,10 +35,25 @@ function sortByCompanyTotal() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
 }
 
+const chartData = computed(() => {
+    return {
+        labels: props.categories.map(el => el.name),
+        datasets: [
+            {
+                label: 'Company Skills by Category',
+                backgroundColor: props.categories.map(el => hexToRgbA('#'+el.color,0.5)),
+                data: props.categories.map(el => el.companyTotal)
+            }
+        ]
+    }
+})
+
 </script>
 
 <template>
-<PolarAreaChart :data="categories" />
+<PolarAreaChart
+    :chartData="chartData"
+/>
 <table class="relative mt-14 z-40 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
         <th class=""></th>

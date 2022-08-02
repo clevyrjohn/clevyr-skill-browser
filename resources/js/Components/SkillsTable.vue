@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { 
@@ -8,6 +8,7 @@ import {
     sortByCompanyTotalDesc,
     sortByCompanyTotalAsc 
 } from '@/Composables/sortItems';
+import stackedBarChart from './Charts/stackedBarChart.js';
 
 
 const props = defineProps({
@@ -34,9 +35,26 @@ function sortByCompanyTotal() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
 }
 
+const chartData = computed(() => {
+    return {
+        labels: props.skills.map(el => el.name),
+        datasets: [
+            {
+                label: 'Skills',
+                backgroundColor: '#FF9100',
+                data: props.skills.map(el => el.companyTotal)
+            }
+        ]
+    }
+})
+
 </script>
 
 <template>
+<stackedBarChart 
+    :chartData="chartData" 
+    :height=200
+/>
 <table class="relative z-40 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
         <!-- <th class=""></th> -->

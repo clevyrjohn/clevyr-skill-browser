@@ -1,6 +1,6 @@
 <script setup>
-import { ref, reactive } from 'vue';
-import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
+import { ref, reactive, computed } from 'vue';
+import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { Link } from '@inertiajs/inertia-vue3';
 import { 
     sortByNameDesc,
@@ -8,6 +8,7 @@ import {
     sortByTotalScoreDesc, 
     sortByTotalScoreAsc 
 } from '@/Composables/sortItems';
+import stackedBarChart from './Charts/stackedBarChart.js';
 
 const props = defineProps({
     humans: Array,
@@ -33,10 +34,26 @@ function sortByTotalScore() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByTotalScoreDesc ? sortByTotalScoreAsc : sortByTotalScoreDesc;
 }
 
+const chartData = computed(() => {
+    return {
+        labels: props.humans.map(el => el.name),
+        datasets: [
+            {
+                label: 'Skills',
+                backgroundColor: '#FF9100',
+                data: props.humans.map(el => el.totalScore)
+            }
+        ]
+    }
+})
+
 </script>
 
 <template>
-<table class="relative z-40 border-separate border-spacing-1 w-full">
+<stackedBarChart 
+    :chartData="chartData" 
+/>
+<table class="relative z-40 mt-12 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
         <th class=""></th>
         <th class="text-left" @click="sortByName">
