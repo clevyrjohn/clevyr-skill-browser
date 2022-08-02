@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { 
@@ -9,10 +9,15 @@ import {
     sortByCompanyTotalAsc 
 } from '@/Composables/sortItems';
 import { hexToRgbA } from '@/Composables/hexToRgbA'
-import PolarAreaChart from './Charts/polarAreaChart';
+import PolarAreaChart from './Charts/PolarAreaChart.vue';
 
 const props = defineProps({
     categories: Array,
+})
+
+const loaded = ref(false);
+onMounted(() => {
+    loaded.value = true;
 })
 
 let displayRows = {
@@ -51,9 +56,11 @@ const chartData = computed(() => {
 </script>
 
 <template>
-<PolarAreaChart
+<PolarAreaChart  
+    v-if="loaded"      
     :chartData="chartData"
 />
+<div v-else class="h-[200px]"></div>
 <table class="relative mt-14 z-40 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
         <th class=""></th>

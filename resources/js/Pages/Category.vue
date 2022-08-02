@@ -1,10 +1,33 @@
 <script setup>
+import { ref, computed, onMounted } from 'vue';
 import TheLayout from '@/Layouts/TheLayout.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { sortByLevelDesc } from '@/Composables/sortItems';
-defineProps({
+import stackedBarChart from '@/Components/Charts/stackedBarChart';
+import { hexToRgbA } from '@/Composables/hexToRgbA.js';
+
+const props = defineProps({
     category: Object,
 })
+
+const loaded = ref(false);
+onMounted(() => {
+    loaded.value = true;
+})
+
+const chartData = computed(() => {
+    return {
+        labels: props.category.skills.map(el => el.name),
+        datasets: [
+            {
+                label: 'Skill',
+                backgroundColor: hexToRgbA('#'+props.category.color,0.5),
+                data: props.category.skills.map(el => el.level)
+            }
+        ]
+    }
+}, { immediate: false })
+
 </script>
 
 <template>
@@ -13,6 +36,8 @@ defineProps({
         <div class="text-5xl font-bold dark:font-normal font-serif pt-4 pb-6">{{ category.name }}</div>
         <div class="text-lg">Numbers Represent Company Totals</div>
     </div>
+    <stackedBarChart v-if="loaded" :chartData="chartData" :height=200 />
+    <div v-else class="h-[200px]"></div>
     <div class="flex flex-row flex-wrap justify-around pt-8 pb-0">
         <div v-for="categorySkill in category.skills.sort(sortByLevelDesc)" :key="categorySkill.id" class="hover:scale-105 ease-in-out duration-75 active:scale-100">
             <Link :href="route('skill.show', categorySkill.id)">

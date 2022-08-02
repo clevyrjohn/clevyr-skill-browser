@@ -1,3 +1,4 @@
+<script>
 import { defineComponent, h } from 'vue'
 
 import { PolarArea } from 'vue-chartjs'
@@ -90,3 +91,4 @@ export default defineComponent({
       })
   }
 })
+</script>

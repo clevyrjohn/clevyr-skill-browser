@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { Link } from '@inertiajs/inertia-vue3';
 import { 
@@ -12,6 +12,11 @@ import stackedBarChart from './Charts/stackedBarChart.js';
 
 const props = defineProps({
     humans: Array,
+})
+
+const loaded = ref(false);
+onMounted(() => {
+    loaded.value = true;
 })
 
 let displayRows = {
@@ -34,23 +39,29 @@ function sortByTotalScore() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByTotalScoreDesc ? sortByTotalScoreAsc : sortByTotalScoreDesc;
 }
 
-const chartData = computed(() => {
-    return {
-        labels: props.humans.map(el => el.name),
-        datasets: [
-            {
-                label: 'Skills',
-                backgroundColor: '#FF9100',
-                data: props.humans.map(el => el.totalScore)
-            }
-        ]
-    }
-})
+// let chartData = { labels: [], datasets: [], data: [] };
+
+// onMounted(() => {
+    const chartData = computed(() => {
+        return {
+            labels: props.humans.map(el => el.name),
+            datasets: [
+                {
+                    label: 'Skills',
+                    backgroundColor: '#FF9100',
+                    data: props.humans.map(el => el.totalScore)
+                }
+            ]
+        }
+    }, { immediate: false })
+// })
+
 
 </script>
 
 <template>
 <stackedBarChart 
+    v-if="loaded"
     :chartData="chartData" 
 />
 <table class="relative z-40 mt-12 border-separate border-spacing-1 w-full">

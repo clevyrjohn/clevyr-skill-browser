@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { 
@@ -13,6 +13,11 @@ import stackedBarChart from './Charts/stackedBarChart.js';
 
 const props = defineProps({
     skills: Array,
+})
+
+const loaded = ref(false);
+onMounted(() => {
+    loaded.value = true;
 })
 
 let displayRows = {
@@ -46,12 +51,13 @@ const chartData = computed(() => {
             }
         ]
     }
-})
+}, { immediate: false })
 
 </script>
 
 <template>
-<stackedBarChart 
+<stackedBarChart
+    v-if="loaded"
     :chartData="chartData" 
     :height=200
 />
