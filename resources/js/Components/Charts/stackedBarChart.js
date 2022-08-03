@@ -37,7 +37,7 @@ export default defineComponent({
       default: 100
     },
     cssClasses: {
-      default: '',
+      default: 'h-100',
       type: String
     },
   },
@@ -45,7 +45,8 @@ export default defineComponent({
 
     const chartOptions = {
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      animation: true,
     }
 
     return () =>
@@ -56,8 +57,6 @@ export default defineComponent({
         width: props.width,
         height: props.height,
         cssClasses: props.cssClasses,
-        styles: props.styles,
-        plugins: props.plugins
       })
   }
 })

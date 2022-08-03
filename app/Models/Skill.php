@@ -39,8 +39,4 @@ class Skill extends Model
     public function getCompanyTotalAttribute() {
         return DB::table('human_skill')->where('skill_id', '=', $this->id)->sum('level');
     }
-
-    public function getTopHumansAttribute() {
-        return ['empty', 'list'];
-    }
 }

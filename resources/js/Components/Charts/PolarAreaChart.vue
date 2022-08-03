@@ -61,12 +61,12 @@ export default defineComponent({
           ticks: {
             display: false,
             backdropColor: 'rgba(0,0,0,0)',
-            color: '#fff',
+            color: '#737373',
           },
           pointLabels: {
             display: true,
             centerPointLabels: true,
-            color: '#fff',
+            color: '#737373',
             font: {
               size: 16,
               family: 'Nunito',

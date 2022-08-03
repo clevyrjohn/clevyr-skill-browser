@@ -1,43 +1,21 @@
 <script setup>
-import { ref, reactive,computed } from 'vue';
+import { ref, reactive,computed, onMounted } from 'vue';
 import TheLayout from '@/Layouts/TheLayout.vue';
 import { Head, Link } from '@inertiajs/inertia-vue3';
 import CategoriesTable from '@/Components/CategoriesTable.vue';
-import { ChevronRightIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import HumansTable from '../Components/HumansTable.vue';
 import SkillsTable from '../Components/SkillsTable.vue';
 
 const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
-    categories: Array,
-    skills: Array,
-    humans: Array,
+    // skills: Array,
+    // humans: Array,
 })
 
 const activeTab = ref('category');
 
-let displayRows = {
-    categories: {},
-    humans: {},
-    skills: {}    
-};
-
-for (const category of props.categories) {
-    displayRows.categories[category.id] = false;
-}
-for (const human of props.humans) {
-    displayRows.humans[human.id] = false;
-}
-for (const skill of props.skills) {
-    displayRows.skills[skill.id] = false;
-}
-
-displayRows = reactive(displayRows);
-
 </script>
-
-
 
 <template>
 <Head title="Welcome" />
@@ -63,13 +41,14 @@ displayRows = reactive(displayRows);
         class="relative z-50 items-top min-h-fit bg-white dark:bg-gray-700">        
         <div class="py-10 px-[10%] mx-auto dark:text-white">
             <div v-show="activeTab === 'category'">                    
-                <CategoriesTable :categories="categories" />
+                <CategoriesTable />
+                <!-- :categories="apiCategories.data" :loaded="loaded" /> -->
             </div>            
             <div v-show="activeTab === 'human'">
-                <HumansTable :humans="humans" />
+                <HumansTable />
             </div>                
             <div v-show="activeTab === 'skill'">                
-                <SkillsTable :skills="skills" />
+                <SkillsTable />
             </div>
         </div>
     </div>

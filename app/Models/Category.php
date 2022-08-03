@@ -17,31 +17,40 @@ class Category extends Model
         return $this->hasMany(Skill::class);
     }
 
-    public function getCompanyTotalAttribute() {
-        $skills = $this->skills()->get();
-
-        $total = 0;
-        foreach($skills as $skill) {
-            $total += $skill['companyTotal'];
-        }
-        return $total;
+    public function getCompanyTotalAttribute() 
+    {
+        return DB::table('human_skill')
+            ->select(
+                'human_skill.level',
+                'human_skill.skill_id',
+                'skill.category_id'
+            )
+            ->where('skills.category_id','=',$this->id)
+            ->leftJoin('skills','human_skill.skill_id','=','skills.id')
+            ->sum('human_skill.level');
     }
 
-    public function getTopHumansAttribute() {
+    public function getHumanTotalsAttribute() {
 
-        // $skills = $this->skills()->get();
+        $categoryHumanTotals = DB::table('human_skill')
+                    ->select(
+                        'human_skill.level',
+                        'human_skill.skill_id',
+                        'skill.category_id'
+                    )
+                    ->where('skills.category_id','=',$this->id)
+                    ->leftJoin('skills','human_skill.skill_id','=','skills.id')
+                    ->sum('human_skill.level');
 
-        // foreach($skills as $skill) {
-        //     $humans = $skill->humans;
-        //     // error_log(json_encode($humans, JSON_PRETTY_PRINT));
-        //     // $rows = DB::table('human_skill')
-        //     //     ->where('level', '>', 0)
-        //     //     ->where('skill_id', '=', $skill->id)
-        //     //     ->get(['human_id','level']);
-        //     // error_log(json_encode($rows));
+        // $categoryHumanTotals = DB::table('humans')
+        //         ->select(
+        //             'humans.name',
+        //             'humans.id',
+        //             'human_skill.human_id',
+        //         )
+        //         ->leftJoin('human_skill','humans.id','=','human_skill.human_id')
+        //         ->get();
 
-        // }
-
-        return ["This guy", "that guy"];
+        return $categoryHumanTotals;
     }
 }

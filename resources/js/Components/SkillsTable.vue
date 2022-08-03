@@ -10,25 +10,18 @@ import {
 } from '@/Composables/sortItems';
 import stackedBarChart from './Charts/stackedBarChart.js';
 
+const skills = ref([]);
+const loaded = computed(() => skills.value.length != undefined);
 
-const props = defineProps({
-    skills: Array,
+onMounted(async () => {
+    try {
+        const res = await fetch(route('api.skills'));
+        const resJson = await res.json();
+        skills.value = resJson.data;
+    } catch (error) {
+        skills.value = [];
+    }    
 })
-
-const loaded = ref(false);
-onMounted(() => {
-    loaded.value = true;
-})
-
-let displayRows = {
-    skills: {},
-};
-
-for (const category of props.skills) {
-    displayRows.skills[category.id] = false;
-}
-
-displayRows = reactive(displayRows);
 
 const sortingAlgorithm = ref(sortByNameAsc);
 
@@ -42,16 +35,16 @@ function sortByCompanyTotal() {
 
 const chartData = computed(() => {
     return {
-        labels: props.skills.map(el => el.name),
+        labels: skills.value.map(el => el.name),
         datasets: [
             {
                 label: 'Skills',
                 backgroundColor: '#FF9100',
-                data: props.skills.map(el => el.companyTotal)
+                data: skills.value.map(el => el.companyTotal)
             }
         ]
     }
-}, { immediate: false })
+})
 
 </script>
 
@@ -63,7 +56,6 @@ const chartData = computed(() => {
 />
 <table class="relative z-40 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
-        <!-- <th class=""></th> -->
         <th class="text-left" @click="sortByName">
             Name
             <ChevronDownIcon
@@ -85,26 +77,10 @@ const chartData = computed(() => {
     </thead>
     <template v-for="skill in skills.sort(sortingAlgorithm)" :key="skill.id" class="static">
         <tr class="static z-40 text-lg">
-            <!-- <td class="cursor-pointer" @click="displayRows.skills[skill.id] = !displayRows.skills[skill.id]">
-                <ChevronRightIcon class="h-7 mr-[-11px]" v-if="displayRows.skills[skill.id] === false" />
-                <ChevronDownIcon class="h-7 mr-[-11px]" v-else />
-            </td> -->
+
             <td><Link class="hover:underline" :href="`/s/${skill.id}`">{{ skill.name }}</Link></td>
             <td class="text-right">{{ skill.companyTotal }}</td>            
         </tr>
-        <!-- <transition name="slide" class="static z-30">
-            <tr v-if="displayRows.skills[skill.id] === true">
-                <td colspan="4">
-                    <table class="w-full mb-2">
-                        <tr v-for="human in skill.humans.filter(h => h.level > 0)" :key="human.id">
-                            <td class="w-11"><ChevronDownIcon class="h-7 mr-[-11px] fill-transparent" /></td>
-                            <td class="text-left">{{ human.human.name }}</td>
-                            <td class="text-right">{{ human.level }}</td>                            
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </transition> -->
     </template>
 </table>
 </template>

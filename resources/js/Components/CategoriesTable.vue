@@ -11,24 +11,18 @@ import {
 import { hexToRgbA } from '@/Composables/hexToRgbA'
 import PolarAreaChart from './Charts/PolarAreaChart.vue';
 
-const props = defineProps({
-    categories: Array,
+const categories = ref([]);
+const loaded = computed(() => categories.value.length != undefined);
+
+onMounted(async () => {
+    try {
+        const res = await fetch(route('api.categories'));
+        const resJson = await res.json();
+        categories.value = resJson.data;
+    } catch (error) {
+        categories.value = [];
+    }    
 })
-
-const loaded = ref(false);
-onMounted(() => {
-    loaded.value = true;
-})
-
-let displayRows = {
-    categories: {},
-};
-
-for (const category of props.categories) {
-    displayRows.categories[category.id] = false;
-}
-
-displayRows = reactive(displayRows);
 
 const sortingAlgorithm = ref(sortByNameAsc);
 
@@ -42,12 +36,12 @@ function sortByCompanyTotal() {
 
 const chartData = computed(() => {
     return {
-        labels: props.categories.map(el => el.name),
+        labels: categories.value.map(el => el.name),
         datasets: [
             {
                 label: 'Company Skills by Category',
-                backgroundColor: props.categories.map(el => hexToRgbA('#'+el.color,0.5)),
-                data: props.categories.map(el => el.companyTotal)
+                backgroundColor: categories.value.map(el => hexToRgbA('#'+el.color,0.5)),
+                data: categories.value.map(el => el.companyTotal)
             }
         ]
     }
@@ -60,10 +54,9 @@ const chartData = computed(() => {
     v-if="loaded"      
     :chartData="chartData"
 />
-<div v-else class="h-[200px]"></div>
+<div v-else class="h-[250px]"></div>
 <table class="relative mt-14 z-40 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
-        <th class=""></th>
         <th class="text-left" @click="sortByName">
             Name
             <ChevronDownIcon
@@ -85,14 +78,10 @@ const chartData = computed(() => {
     </thead>
     <template v-for="category in categories.sort(sortingAlgorithm)" :key="category.id" class="static">
         <tr class="static z-40 text-lg">
-            <td class="cursor-pointer" @click="displayRows.categories[category.id] = !displayRows.categories[category.id]">
-                <ChevronRightIcon class="h-7 mr-[-11px]" v-if="displayRows.categories[category.id] === false" />
-                <ChevronDownIcon class="h-7 mr-[-11px]" v-else />
-            </td>
             <td class=""><Link class="hover:underline" :href="`/c/${category.id}`">{{ category.name }}</Link></td>
             <td class="text-right">{{ category.companyTotal }}</td>            
         </tr>
-        <transition name="slide" class="static z-30">
+        <!-- <transition name="slide" class="static z-30">
             <tr v-if="displayRows.categories[category.id] === true">
                 <td colspan="4">
                     <table class="w-full mb-2">
@@ -104,7 +93,7 @@ const chartData = computed(() => {
                     </table>
                 </td>
             </tr>
-        </transition>
+        </transition> -->
     </template>
 </table>
 </template>

@@ -1,15 +1,43 @@
 <script setup>
+import { ref, onMounted, computed } from 'vue';
 import TheLayout from '@/Layouts/TheLayout.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { sortByLevelDesc } from '@/Composables/sortItems';
-defineProps({
+import { hexToRgbA } from '@/Composables/hexToRgbA'
+import PolarAreaChart from '../Components/Charts/PolarAreaChart.vue';
+
+const props = defineProps({
     human: Object,
 })
+
+const loaded = ref(false);
+onMounted(() => {
+    loaded.value = true;
+})
+
+const chartData = computed(() => {
+    return {
+        labels: props.human.categoryScores.map(el => el.name),
+        datasets: [
+            {
+                label: 'Skills by Category',
+                backgroundColor: props.human.categoryScores.map(el => hexToRgbA('#'+el.color,0.5)),
+                data: props.human.categoryScores.map(el => el.total)
+            }
+        ]
+    }
+})
+
 </script>
 
 <template>
 <TheLayout>
-    <div class="text-5xl font-bold dark:font-normal text-center font-serif pt-4 pb-6 dark:text-white">{{ human.name }}</div>        
+    <div class="text-5xl font-bold dark:font-normal text-center font-serif pt-4 pb-6 dark:text-white">{{ human.name }}</div>
+    <PolarAreaChart  
+        v-if="loaded"      
+        :chartData="chartData"
+        class="py-20"
+    />
     <div class="flex flex-row flex-wrap justify-around py-8">        
         <div v-for="humanSkill in human.skills.filter(hs => hs.level > 0).sort(sortByLevelDesc)" :key="humanSkill.id" class="hover:scale-105 ease-in-out duration-75 active:scale-100">
             

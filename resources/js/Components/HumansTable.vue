@@ -10,24 +10,18 @@ import {
 } from '@/Composables/sortItems';
 import stackedBarChart from './Charts/stackedBarChart.js';
 
-const props = defineProps({
-    humans: Array,
+const humans = ref([]);
+const loaded = computed(() => humans.value.length != undefined);
+
+onMounted(async () => {
+    try {
+        const res = await fetch(route('api.humans'));
+        const resJson = await res.json();
+        humans.value = resJson.data;
+    } catch (error) {
+        humans.value = [];
+    }    
 })
-
-const loaded = ref(false);
-onMounted(() => {
-    loaded.value = true;
-})
-
-let displayRows = {
-    humans: {},
-};
-
-for (const human of props.humans) {
-    displayRows.humans[human.id] = false;
-}
-
-displayRows = reactive(displayRows);
 
 const sortingAlgorithm = ref(sortByNameAsc);
 
@@ -39,23 +33,18 @@ function sortByTotalScore() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByTotalScoreDesc ? sortByTotalScoreAsc : sortByTotalScoreDesc;
 }
 
-// let chartData = { labels: [], datasets: [], data: [] };
-
-// onMounted(() => {
-    const chartData = computed(() => {
-        return {
-            labels: props.humans.map(el => el.name),
-            datasets: [
-                {
-                    label: 'Skills',
-                    backgroundColor: '#FF9100',
-                    data: props.humans.map(el => el.totalScore)
-                }
-            ]
-        }
-    }, { immediate: false })
-// })
-
+const chartData = computed(() => {
+    return {
+        labels: humans.value.map(el => el.name),
+        datasets: [
+            {
+                label: 'Skills',
+                backgroundColor: '#FF9100',
+                data: humans.value.map(el => el.totalScore)
+            }
+        ]
+    }
+})
 
 </script>
 
@@ -63,6 +52,7 @@ function sortByTotalScore() {
 <stackedBarChart 
     v-if="loaded"
     :chartData="chartData" 
+    :height=200
 />
 <table class="relative z-40 mt-12 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">

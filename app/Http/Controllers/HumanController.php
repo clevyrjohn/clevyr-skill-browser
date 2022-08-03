@@ -11,7 +11,7 @@ class HumanController extends Controller
     public function show(Human $human)
     {
         return inertia('Human', [
-            'human' => $human->load('skills','skills.skill'),
+            'human' => $human->load('skills','skills.skill')->append('categoryScores'),
         ]);
     }
 }
