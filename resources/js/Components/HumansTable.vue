@@ -23,6 +23,16 @@ onMounted(async () => {
         const newRes = await fetch(route('api.hc'));
         const newResJson = await newRes.json();
         humans2.value = newResJson.data;
+        // console.log(humans.value.map(el => {
+        //     return {
+        //         label: el.name,
+        //         data: el.categoryScores.map(el => el.total)
+        //     }}));
+        // console.log(humans2.value.map(el => el.humanTotals.map(el => {
+        //     return {
+        //         name: el.name,
+        //         totalScore: el.total_score,
+        //     }})));
     } catch (error) {
         humans.value = [];
     }    
@@ -38,8 +48,6 @@ function sortByTotalScore() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByTotalScoreDesc ? sortByTotalScoreAsc : sortByTotalScoreDesc;
 }
 
-
-
 const chartData = computed(() => {
     return {
         labels: humans2.value[0]?.humanTotals.map(el => el.name),
@@ -52,6 +60,18 @@ const chartData = computed(() => {
         })
     }
 })
+// const chartData = computed(() => {
+//     return {
+//         labels: humans.value.map(el => el.name),
+//         datasets: humans2.value.map((el,index) => {            
+//             return {
+//                 label: el.name,
+//                 data: el.humanTotals.map(el => el.total_score),
+//                 backgroundColor: hexToRgbA('#'+el.color,0.9),
+//             }
+//         })
+//     }
+// })
 
 const chartOptions = computed(() => {
     return {

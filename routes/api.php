@@ -29,7 +29,7 @@ Route::get('/categories', function () {
 })->name('api.categories');
 
 Route::get('/humans', function () {
-    return new HumanResource(Human::all()->append(['totalScore']));//->load(['skills','skills.skill']);
+    return new HumanResource(Human::all()->append(['totalScore','categoryScores']));//->load(['skills','skills.skill']);
 })->name('api.humans');
 
 Route::get('/hc', function () {
