@@ -30,26 +30,24 @@ class Category extends Model
             ->sum('human_skill.level');
     }
 
-    public function getHumanTotalsAttribute() {
-
-        $categoryHumanTotals = DB::table('human_skill')
-                    ->select(
-                        'human_skill.level',
-                        'human_skill.skill_id',
-                        'skill.category_id'
-                    )
-                    ->where('skills.category_id','=',$this->id)
-                    ->leftJoin('skills','human_skill.skill_id','=','skills.id')
-                    ->sum('human_skill.level');
-
-        // $categoryHumanTotals = DB::table('humans')
-        //         ->select(
-        //             'humans.name',
-        //             'humans.id',
-        //             'human_skill.human_id',
-        //         )
-        //         ->leftJoin('human_skill','humans.id','=','human_skill.human_id')
-        //         ->get();
+    public function getHumanTotalsAttribute() 
+    {
+        $categoryHumanTotals = DB::select(
+            "SELECT 
+            skills.category_id, 
+            sum(human_skill.level) as total_score, 
+            human_skill.human_id,
+            humans.name
+            FROM skills            
+            FULL OUTER JOIN human_skill
+                ON skills.id = human_skill.skill_id
+            FULL OUTER JOIN humans
+                ON human_skill.human_id = humans.id
+            WHERE skills.category_id = {$this->id}
+            GROUP BY skills.category_id, human_skill.human_id, humans.name
+            ORDER BY humans.name
+            "
+        );
 
         return $categoryHumanTotals;
     }

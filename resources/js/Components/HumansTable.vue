@@ -8,9 +8,11 @@ import {
     sortByTotalScoreDesc, 
     sortByTotalScoreAsc 
 } from '@/Composables/sortItems';
+import { hexToRgbA } from '@/Composables/hexToRgbA'
 import stackedBarChart from './Charts/stackedBarChart.js';
 
 const humans = ref([]);
+const humans2 = ref([]);
 const loaded = computed(() => humans.value.length != undefined);
 
 onMounted(async () => {
@@ -18,6 +20,9 @@ onMounted(async () => {
         const res = await fetch(route('api.humans'));
         const resJson = await res.json();
         humans.value = resJson.data;
+        const newRes = await fetch(route('api.hc'));
+        const newResJson = await newRes.json();
+        humans2.value = newResJson.data;
     } catch (error) {
         humans.value = [];
     }    
@@ -33,16 +38,34 @@ function sortByTotalScore() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByTotalScoreDesc ? sortByTotalScoreAsc : sortByTotalScoreDesc;
 }
 
+
+
 const chartData = computed(() => {
     return {
-        labels: humans.value.map(el => el.name),
-        datasets: [
-            {
-                label: 'Skills',
-                backgroundColor: '#FF9100',
-                data: humans.value.map(el => el.totalScore)
+        labels: humans2.value[0]?.humanTotals.map(el => el.name),
+        datasets: humans2.value.map(el => {
+            return {
+                label: el.name,
+                data: el.humanTotals.map(el => el.total_score),
+                backgroundColor: hexToRgbA('#'+el.color,0.9),
             }
-        ]
+        })
+    }
+})
+
+const chartOptions = computed(() => {
+    return {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: true,
+        scales: {
+            x: {
+                stacked: true,
+            },                
+            y: {
+                stacked: true
+            }
+        },
     }
 })
 
@@ -52,11 +75,10 @@ const chartData = computed(() => {
 <stackedBarChart 
     v-if="loaded"
     :chartData="chartData" 
-    :height=200
+    :chartOptions="chartOptions"  
 />
 <table class="relative z-40 mt-12 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
-        <th class=""></th>
         <th class="text-left" @click="sortByName">
             Name
             <ChevronDownIcon
@@ -78,26 +100,9 @@ const chartData = computed(() => {
     </thead>
     <template v-for="human in humans.sort(sortingAlgorithm)" :key="human.id" class="static">
         <tr class="static z-40 text-lg">
-            <td class="cursor-pointer"><!-- @click="displayRows.humans[human.id] = !displayRows.humans[human.id]">-->
-                <!-- <ChevronRightIcon class="h-7 mr-[-17px]" v-if="displayRows.humans[human.id] === false" /> -->
-                <!-- <ChevronDownIcon class="h-7 mr-[-17px]" v-else /> -->
-            </td>
             <td><Link class="hover:underline" :href="`/h/${human.id}`">{{ human.name }}</Link></td>
             <td class="text-right">{{ human.totalScore }}</td>            
         </tr>
-        <!-- <transition name="slide" class="static z-30">
-            <tr v-if="displayRows.humans[human.id] === true">
-                <td colspan="4">
-                    <table class="w-full mb-2">
-                        <tr v-for="skill in human.skills.filter(s => s.level > 0)" :key="skill.id">
-                            <td class="w-11"><ChevronDownIcon class="h-7 fill-transparent" /></td>
-                            <td class="text-left">{{ skill.skill.name }}</td>
-                            <td class="text-right">{{ skill.level }}</td>                            
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </transition> -->
     </template>
 </table>
 </template>

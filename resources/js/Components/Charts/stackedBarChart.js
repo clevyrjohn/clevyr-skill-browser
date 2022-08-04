@@ -28,13 +28,29 @@ export default defineComponent({
       type: Object,
       default: {},
     },
+    chartOptions: {
+      type: Object,
+      default: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: true,
+        scales: {
+            x: {
+                stacked: true,
+            },
+            y: {
+                stacked: true
+            }
+        },
+      }
+    },
     width: {
       type: Number,
       default: 400
     },
     height: {
       type: Number,
-      default: 100
+      default: 400
     },
     cssClasses: {
       default: 'h-100',
@@ -43,16 +59,10 @@ export default defineComponent({
   },
   setup(props) {
 
-    const chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: true,
-    }
-
     return () =>
       h(Bar, {
         chartData: props.chartData,
-        chartOptions,
+        chartOptions: props.chartOptions,
         chartId: props.chartId,
         width: props.width,
         height: props.height,

@@ -9,8 +9,6 @@ import SkillsTable from '../Components/SkillsTable.vue';
 const props = defineProps({
     canLogin: Boolean,
     canRegister: Boolean,
-    // skills: Array,
-    // humans: Array,
 })
 
 const activeTab = ref('category');
@@ -42,7 +40,6 @@ const activeTab = ref('category');
         <div class="py-10 px-[10%] mx-auto dark:text-white">
             <div v-show="activeTab === 'category'">                    
                 <CategoriesTable />
-                <!-- :categories="apiCategories.data" :loaded="loaded" /> -->
             </div>            
             <div v-show="activeTab === 'human'">
                 <HumansTable />
