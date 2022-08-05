@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
 import { Link } from '@inertiajs/inertia-vue3';
 import { 
@@ -10,19 +10,24 @@ import {
 } from '@/Composables/sortItems';
 import { hexToRgbA } from '@/Composables/hexToRgbA'
 import stackedBarChart from './Charts/stackedBarChart.js';
+import { flattenDeep } from 'lodash';
 
-const humans = ref([]);
-const humans2 = ref([]);
-const loaded = computed(() => humans.value.length != undefined);
+const chartData = ref({});
+// const humans2 = ref([]);
+const loaded = computed(() => chartData.value != {});
 
 onMounted(async () => {
     try {
-        const res = await fetch(route('api.humans'));
+        const res = await fetch(route('api.humanstable'));
         const resJson = await res.json();
-        humans.value = resJson.data;
-        const newRes = await fetch(route('api.hc'));
-        const newResJson = await newRes.json();
-        humans2.value = newResJson.data;
+        chartData.value = resJson.data;        
+        // const res = await fetch(route('api.humans'));
+        // const resJson = await res.json();
+        // humans.value = resJson.data;
+        // const newRes = await fetch(route('api.hc'));
+        // const newResJson = await newRes.json();
+        // humans2.value = newResJson.data;
+        // console.log(humans.value.map(el => el.categoryScores))
         // console.log(humans.value.map(el => {
         //     return {
         //         label: el.name,
@@ -34,7 +39,7 @@ onMounted(async () => {
         //         totalScore: el.total_score,
         //     }})));
     } catch (error) {
-        humans.value = [];
+        chartData.value = {};
     }    
 })
 
@@ -48,18 +53,54 @@ function sortByTotalScore() {
     sortingAlgorithm.value = sortingAlgorithm.value === sortByTotalScoreDesc ? sortByTotalScoreAsc : sortByTotalScoreDesc;
 }
 
-const chartData = computed(() => {
-    return {
-        labels: humans2.value[0]?.humanTotals.map(el => el.name),
-        datasets: humans2.value.map(el => {
-            return {
-                label: el.name,
-                data: el.humanTotals.map(el => el.total_score),
-                backgroundColor: hexToRgbA('#'+el.color,0.9),
-            }
-        })
-    }
-})
+// const chartData = computed(() => {
+//     return {
+//         labels: humans2.value[0]?.humanTotals.map(el => el.name),
+//         datasets: humans2.value.map(el => {
+//             return {
+//                 label: el.name,
+//                 data: el.humanTotals.map(el => el.total_score),
+//                 backgroundColor: hexToRgbA('#'+el.color,0.9),
+//             }
+//         })
+//     }
+// })
+
+// const desiredFormat = computed(() => {
+//     return {
+//         labels: ['Human 1', 'Human 2'],
+//         datasets: [
+//             { label: 'Category 1', data: [10,15], backgroundColor: hexToRgbA('#'+'FFF',0.9), },
+//             { label: 'Category 2', data: [15,10], backgroundColor: hexToRgbA('#'+'CCC',0.9), },
+//         ],
+//     }
+// })
+
+// const datasets = computed(() => {
+//     // return [
+//     //     { label: 'Category 1', data: [10,15], backgroundColor: hexToRgbA('#'+'FFF',0.9), },
+//     // ];
+//     // return flattenDeep(humans.value.map(el => el.categoryScores))
+//     return flattenDeep(
+//         humans.value.map(
+//             el => el.categoryScores.map(el => {
+//                 return {
+//                     label: el.name,
+//                     data: [el.total],
+//                     backgroundColor: hexToRgbA('#'+el.color,0.9)
+//                 }
+//             })
+//         )
+//     )
+// })
+
+// const chartData = computed(() => {
+//     return {
+//         labels: humans.value.map(el => el.name),
+//         datasets: datasets.value,
+//     }
+// })
+
 // const chartData = computed(() => {
 //     return {
 //         labels: humans.value.map(el => el.name),
@@ -73,21 +114,9 @@ const chartData = computed(() => {
 //     }
 // })
 
-const chartOptions = computed(() => {
-    return {
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: true,
-        scales: {
-            x: {
-                stacked: true,
-            },                
-            y: {
-                stacked: true
-            }
-        },
-    }
-})
+// watch(chartData, ()=> {
+//     console.log(chartData.value)
+// })
 
 </script>
 
@@ -95,8 +124,14 @@ const chartOptions = computed(() => {
 <stackedBarChart 
     v-if="loaded"
     :chartData="chartData" 
-    :chartOptions="chartOptions"  
 />
+<!-- <stackedBarChart 
+    v-if="loaded"
+    :chartData="desiredFormat" 
+/> -->
+<!-- {{ desiredFormat }}<br />
+{{ humans }} -->
+<!-- {{ chartData }} -->
 <table class="relative z-40 mt-12 border-separate border-spacing-1 w-full">
     <thead class="text-lg font-serif">
         <th class="text-left" @click="sortByName">
@@ -118,11 +153,11 @@ const chartOptions = computed(() => {
             Total Score
         </th>
     </thead>
-    <template v-for="human in humans.sort(sortingAlgorithm)" :key="human.id" class="static">
+    <!-- <template v-for="(human, index) in humans.sort(sortingAlgorithm)" :key="human.id" class="static">
         <tr class="static z-40 text-lg">
             <td><Link class="hover:underline" :href="`/h/${human.id}`">{{ human.name }}</Link></td>
             <td class="text-right">{{ human.totalScore }}</td>            
         </tr>
-    </template>
+    </template> -->
 </table>
 </template>

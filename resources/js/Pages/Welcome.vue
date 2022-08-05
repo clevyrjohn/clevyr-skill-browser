@@ -11,7 +11,8 @@ const props = defineProps({
     canRegister: Boolean,
 })
 
-const activeTab = ref('category');
+// const activeTab = ref('category');
+const activeTab = ref('human');
 
 </script>
 
@@ -21,10 +22,10 @@ const activeTab = ref('category');
     <div class="relative z-50 text-5xl font-bold dark:font-normal text-center font-serif pt-4 pb-6 dark:text-white">Browse by...</div>
     
     <div class="relative z-50 bg-gray-500 flex flex-row justify-around divide-x divide-blue-light border-x-[1px] rounded-t-md text-white font-bold">
-        <div 
+        <!-- <div 
             class="active:scale-100 hover:bg-blue-light basis-1/3 p-5 text-center cursor-pointer hover:scale-105 ease-in-out duration-75 rounded-tl-md"
             :class="activeTab === 'category' ? 'bg-blue-light' : ''"
-            @click="activeTab = 'category'">Category</div>
+            @click="activeTab = 'category'">Category</div> -->
         <div 
             class="active:scale-100 hover:bg-blue-light basis-1/3 p-5 text-center cursor-pointer hover:scale-105 ease-in-out duration-75"
             :class="activeTab === 'human' ? 'bg-blue-light' : ''"
@@ -38,9 +39,9 @@ const activeTab = ref('category');
     <div
         class="relative z-50 items-top min-h-fit bg-white dark:bg-gray-700">        
         <div class="py-10 px-[10%] mx-auto dark:text-white">
-            <div v-show="activeTab === 'category'">                    
+            <!-- <div v-show="activeTab === 'category'">                    
                 <CategoriesTable />
-            </div>            
+            </div>             -->
             <div v-show="activeTab === 'human'">
                 <HumansTable />
             </div>                
