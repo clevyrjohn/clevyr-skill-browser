@@ -17,7 +17,7 @@ class Category extends Model
         return $this->hasMany(Skill::class);
     }
 
-    public function getCompanyTotalAttribute() 
+    public function getCompanyTotalAttribute()
     {
         return DB::table('human_skill')
             ->select(
@@ -25,27 +25,27 @@ class Category extends Model
                 'human_skill.skill_id',
                 'skill.category_id'
             )
-            ->where('skills.category_id','=',$this->id)
-            ->leftJoin('skills','human_skill.skill_id','=','skills.id')
+            ->where('skills.category_id', '=', $this->id)
+            ->leftJoin('skills', 'human_skill.skill_id', '=', 'skills.id')
             ->sum('human_skill.level');
     }
 
-    public function getHumanTotalsAttribute() 
+    public function getHumanTotalsAttribute()
     {
         $categoryHumanTotals = DB::select(
-            "SELECT 
-            skills.category_id, 
-            sum(human_skill.level) as total_score, 
+            "SELECT
+            skills.category_id,
+            sum(human_skill.level) as total_score,
             human_skill.human_id,
             humans.name
-            FROM skills            
+            FROM skills
             FULL OUTER JOIN human_skill
                 ON skills.id = human_skill.skill_id
             FULL OUTER JOIN humans
                 ON human_skill.human_id = humans.id
             WHERE skills.category_id = {$this->id}
             GROUP BY skills.category_id, human_skill.human_id, humans.name
-            ORDER BY humans.name
+            ORDER BY human_skill.human_id
             "
         );
 
