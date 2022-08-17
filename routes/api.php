@@ -77,31 +77,34 @@ Route::get('/hc', function () {
 
 Route::get('/humanstable', function () {
     $categories = Category::all()->append(['humanTotals'])->toArray();
-    $humans = Human::all()->append(['totalScore'])->toArray();
+    $humans = Human::all()->append(['totalScore', 'categoryScores'])->toArray();
     return new HumanResource([
-        'labels' => array_map(
-            function ($human) {
-                return [
-                    'name' => $human['name'],
-                    'id' => $human['id'],
-                ];
-            },
-            $humans
-        ),
-        'datasets' => array_map(
+        'categories' => array_map(
             function ($category) {
                 return [
                     'label' => $category['name'],
-                    'data' => array_map(
-                        function ($humanTotal) {
-                            return $humanTotal->total_score;
-                        },
-                        $category['humanTotals']
-                    ),
                     'backgroundColor' => hex2rgba($category['color'], 0.7),
                 ];
             },
             $categories
+        ),
+        'humans' => array_map(
+            function ($human) use ($categories) {
+                $categoryScores = [];
+
+                foreach ($human['categoryScores'] as $categoryScore) {
+                    $categoryScores[$categoryScore['name']] = $categoryScore['total'];
+                }
+
+                $row = [
+                    'name' => $human['name'],
+                    'id' => $human['id'],
+                    'totalScore' => $human['totalScore'],
+                ];
+
+                return array_merge($row, $categoryScores);
+            },
+            $humans
         ),
     ]);
 })->name('api.humanstable');

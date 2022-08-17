@@ -42,4 +42,8 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+Route::get('/mobile', function () {
+    return Inertia::render('Mobile');
+});
+
+require __DIR__ . '/auth.php';

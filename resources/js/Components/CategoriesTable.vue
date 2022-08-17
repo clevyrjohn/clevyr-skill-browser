@@ -1,101 +1,119 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, computed, inject, onMounted } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
-import { 
-    sortByNameDesc,
-    sortByNameAsc,
-    sortByCompanyTotalDesc, 
-    sortByCompanyTotalAsc 
+import {
+	sortByNameDesc,
+	sortByNameAsc,
+	sortByCompanyTotalDesc,
+	sortByCompanyTotalAsc,
 } from '@/Composables/sortItems';
-import { hexToRgbA } from '@/Composables/hexToRgbA'
+import { hexToRgbA } from '@/Composables/hexToRgbA';
 import PolarAreaChart from './Charts/PolarAreaChart.vue';
 
-const categories = ref([]);
-const loaded = computed(() => categories.value.length != undefined);
+const { categories } = inject('tableData');
+const loaded = ref(false);
 
-onMounted(async () => {
-    try {
-        const res = await fetch(route('api.categories'));
-        const resJson = await res.json();
-        categories.value = resJson.data;
-    } catch (error) {
-        categories.value = [];
-    }    
-})
+onMounted(() => loaded.value = true);
 
 const sortingAlgorithm = ref(sortByNameAsc);
 
 function sortByName() {
-    sortingAlgorithm.value = sortingAlgorithm.value === sortByNameAsc ? sortByNameDesc : sortByNameAsc;
+	sortingAlgorithm.value = sortingAlgorithm.value === sortByNameAsc ? sortByNameDesc : sortByNameAsc;
 }
 
 function sortByCompanyTotal() {
-    sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
+	sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
 }
 
 const chartData = computed(() => {
-    return {
-        labels: categories.value.map(el => el.name),
-        datasets: [
-            {
-                label: 'Company Skills by Category',
-                backgroundColor: categories.value.map(el => hexToRgbA('#'+el.color,0.5)),
-                data: categories.value.map(el => el.companyTotal)
-            }
-        ]
-    }
-})
+	return {
+		labels: categories.value.map((el) => el.name),
+		datasets: [
+			{
+				label: 'Company Skills by Category',
+				backgroundColor: categories.value.map((el) => hexToRgbA('#'+el.color, 0.5)),
+				data: categories.value.map((el) => el.companyTotal),
+			},
+		],
+	};
+});
 
 </script>
 
 <template>
-<PolarAreaChart  
-    v-if="loaded"      
-    :chartData="chartData"
-/>
-<div v-else class="h-[250px]"></div>
-<table class="relative mt-14 z-40 border-separate border-spacing-1 w-full">
-    <thead class="text-lg font-serif">
-        <th class="text-left" @click="sortByName">
-            Name
-            <ChevronDownIcon
-                v-show="sortingAlgorithm === sortByNameAsc"
-                class="h-7 w-7 inline" />
-            <ChevronUpIcon
-                v-show="sortingAlgorithm === sortByNameDesc"
-                class="h-7 w-7 inline" />                
-        </th>
-        <th class="text-right" @click="sortByCompanyTotal">
-            <ChevronDownIcon
-                v-show="sortingAlgorithm === sortByCompanyTotalDesc"
-                class="h-7 w-7 inline" />
-            <ChevronUpIcon
-                v-show="sortingAlgorithm === sortByCompanyTotalAsc"
-                class="h-7 w-7 inline" />            
-            Company Score            
-        </th>
-    </thead>
-    <template v-for="category in categories.sort(sortingAlgorithm)" :key="category.id" class="static">
-        <tr class="static z-40 text-lg">
-            <td class=""><Link class="hover:underline" :href="`/c/${category.id}`">{{ category.name }}</Link></td>
-            <td class="text-right">{{ category.companyTotal }}</td>            
-        </tr>
-        <!-- <transition name="slide" class="static z-30">
+	<PolarAreaChart
+		v-if="loaded"
+		:chart-data="chartData"
+	/>
+	<div
+		v-else
+		class="h-[250px]"
+	/>
+	<table class="relative z-40 mt-14 w-full border-separate border-spacing-1">
+		<thead class="font-serif text-lg">
+			<th
+				class="text-left"
+				@click="sortByName"
+			>
+				Name
+				<ChevronDownIcon
+					v-show="sortingAlgorithm === sortByNameAsc"
+					class="inline h-7 w-7"
+				/>
+				<ChevronUpIcon
+					v-show="sortingAlgorithm === sortByNameDesc"
+					class="inline h-7 w-7"
+				/>
+			</th>
+			<th
+				class="text-right"
+				@click="sortByCompanyTotal"
+			>
+				<ChevronDownIcon
+					v-show="sortingAlgorithm === sortByCompanyTotalDesc"
+					class="inline h-7 w-7"
+				/>
+				<ChevronUpIcon
+					v-show="sortingAlgorithm === sortByCompanyTotalAsc"
+					class="inline h-7 w-7"
+				/>
+				Company Score
+			</th>
+		</thead>
+		<template
+			v-for="category in categories.sort(sortingAlgorithm)"
+			:key="category.id"
+			class="static"
+		>
+			<tr class="static z-40 text-lg">
+				<td class="">
+					<Link
+						class="hover:underline"
+						:href="`/c/${category.id}`"
+					>
+						{{ category.name }}
+					</Link>
+				</td>
+				<td class="text-right">
+					{{ category.companyTotal }}
+				</td>
+			</tr>
+			<!-- <transition name="slide" class="static z-30">
             <tr v-if="displayRows.categories[category.id] === true">
                 <td colspan="4">
                     <table class="w-full mb-2">
                         <tr v-for="skill in category.skills.sort(sortingAlgorithm)" :key="skill.id">
                             <td class="w-11"><ChevronDownIcon class="h-7 mr-[-11px] fill-transparent" /></td>
                             <td class="text-left">{{ skill.name }}</td>
-                            <td class="text-right">{{ skill.companyTotal }}</td>                            
+                            <td class="text-right">{{ skill.companyTotal }}</td>
                         </tr>
                     </table>
                 </td>
             </tr>
         </transition> -->
-    </template>
-</table>
+		</template>
+	</table>
 </template>
 
 <style scoped>
