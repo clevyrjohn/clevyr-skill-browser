@@ -84,7 +84,6 @@ const chartData = computed(() => {
 		<template
 			v-for="category in categories.sort(sortingAlgorithm)"
 			:key="category.id"
-			class="static"
 		>
 			<tr class="static z-40 text-lg">
 				<td class="">

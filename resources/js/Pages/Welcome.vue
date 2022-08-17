@@ -13,6 +13,7 @@ defineProps({
 
 const activeTab = ref('category');
 // const activeTab = ref('human');
+// const activeTab = ref('skill');
 
 const changeTab = (value) => activeTab.value = value;
 
@@ -29,15 +30,18 @@ const humans = ref({
 	humans: [],
 	categories: [],
 });
-const skills = ref([
-	{
-		category_id: null,
-		companyTotal: null,
-		description: null,
-		id: null,
-		name: null,
-	},
-]);
+const emptySkill = {
+	category_id: null,
+	companyTotal: null,
+	description: null,
+	id: null,
+	name: null,
+};
+const skills = ref({
+	skills: [emptySkill],
+	// skills2: [emptySkill],
+	// categories: [],
+});
 
 onMounted(async () => {
 	let res;

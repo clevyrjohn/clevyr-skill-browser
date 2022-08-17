@@ -15,6 +15,36 @@ const loaded = ref(false);
 
 onMounted(() => loaded.value = true);
 
+const chartData = computed(() => {
+	return {
+		labels: skills.value.skills.map((el) => el.name),
+		datasets: [
+			{
+				label: 'Skills',
+				backgroundColor: '#FF9100',
+				data: skills.value.skills.map((el) => el.companyTotal),
+			},
+		],
+	};
+});
+
+// const cChartData = computed(() => {
+// 	return {
+// 		labels: skills.value.categories.map((i) => {
+// 			return i.skills.map((j) => j.name);
+// 		}).flat(),
+// 		datasets: skills.value.categories.map((i) => {
+// 			return {
+// 				label: i.label,
+// 				backgroundColor: i.backgroundColor,
+// 				data: skills.value.categories.map((i) => {
+// 					return i.skills.map((j) => j.companyTotal);
+// 				}),
+// 			};
+// 		}),
+// 	};
+// });
+
 const sortingAlgorithm = ref(sortByNameAsc);
 
 function sortByName() {
@@ -25,30 +55,17 @@ function sortByCompanyTotal() {
 	sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
 }
 
-const chartData = computed(() => {
-	return {
-		labels: skills.value.map((el) => el.name),
-		datasets: [
-			{
-				label: 'Skills',
-				backgroundColor: '#FF9100',
-				data: skills.value.map((el) => el.companyTotal),
-			},
-		],
-	};
-});
-
 </script>
 
 <template>
 	<stackedBarChart
 		v-if="loaded"
 		:chart-data="chartData"
-		:height="200"
+		:height="500"
 	/>
 	<div
 		v-else
-		class="h-[200px]"
+		class="h-[500px]"
 	/>
 	<table class="relative z-40 w-full border-separate border-spacing-1">
 		<thead class="font-serif text-lg">
@@ -82,9 +99,8 @@ const chartData = computed(() => {
 			</th>
 		</thead>
 		<template
-			v-for="skill in skills.sort(sortingAlgorithm)"
+			v-for="skill in skills.skills.sort(sortingAlgorithm)"
 			:key="skill.id"
-			class="static"
 		>
 			<tr class="static z-40 text-lg">
 				<td>

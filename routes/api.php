@@ -110,5 +110,43 @@ Route::get('/humanstable', function () {
 })->name('api.humanstable');
 
 Route::get('/skills', function () {
-    return new SkillResource(Skill::all()->append(['companyTotal'])); //->load('humans','humans.human'););
+    $skills = Skill::all()->load('category')->append(['companyTotal'])->toArray();
+    // $categories = array_map(
+    //     function ($category) {
+    //         return [
+    //             'label' => $category['name'],
+    //             'backgroundColor' => hex2rgba($category['color'], 0.7),
+    //             'id' => $category['id'],
+    //             'skills' => array_map(
+    //                 function($skill) {
+    //                     return [
+    //                         'name' => $skill['name'],
+    //                         'companyTotal' => $skill['companyTotal']
+    //                     ];
+    //                 },
+    //                 $category['skills']
+    //             ),
+    //         ];
+    //     },
+    //     Category::all()->load('skills')->append(['humanTotals'])->toArray()
+    // );
+
+
+    $skills2 = array_map(
+        function ($skill) {
+            return [
+                'id' => $skill['id'],
+                'name' => $skill['name'],
+                'companyTotal' => $skill['companyTotal'],
+                'category' => $skill['category']['name'],
+            ];
+        },
+        $skills
+    );
+
+    return new SkillResource([
+        'skills' => $skills2,
+        // 'skills2' => $skills2,
+        // 'categories' => $categories,
+    ]);
 })->name('api.skills');
