@@ -12,8 +12,6 @@ defineProps({
 });
 
 const activeTab = ref('category');
-// const activeTab = ref('human');
-// const activeTab = ref('skill');
 
 const changeTab = (value) => activeTab.value = value;
 
@@ -39,7 +37,7 @@ const emptySkill = {
 };
 const skills = ref({
 	skills: [emptySkill],
-	// skills2: [emptySkill],
+	skills2: [emptySkill],
 	// categories: [],
 });
 

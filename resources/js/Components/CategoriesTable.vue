@@ -98,19 +98,6 @@ const chartData = computed(() => {
 					{{ category.companyTotal }}
 				</td>
 			</tr>
-			<!-- <transition name="slide" class="static z-30">
-            <tr v-if="displayRows.categories[category.id] === true">
-                <td colspan="4">
-                    <table class="w-full mb-2">
-                        <tr v-for="skill in category.skills.sort(sortingAlgorithm)" :key="skill.id">
-                            <td class="w-11"><ChevronDownIcon class="h-7 mr-[-11px] fill-transparent" /></td>
-                            <td class="text-left">{{ skill.name }}</td>
-                            <td class="text-right">{{ skill.companyTotal }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </transition> -->
 		</template>
 	</table>
 </template>

@@ -9,6 +9,7 @@ import {
 	sortByCompanyTotalAsc,
 } from '@/Composables/sortItems';
 import stackedBarChart from './Charts/stackedBarChart.js';
+import { hexToRgbA } from '@/Composables/hexToRgbA';
 
 const { skills } = inject('tableData');
 const loaded = ref(false);
@@ -21,29 +22,13 @@ const chartData = computed(() => {
 		datasets: [
 			{
 				label: 'Skills',
-				backgroundColor: '#FF9100',
+				backgroundColor: hexToRgbA('#'+'FF9100', 0.85),
+				borderColor: hexToRgbA('#'+'E97724', 1.0),
 				data: skills.value.skills.map((el) => el.companyTotal),
 			},
 		],
 	};
 });
-
-// const cChartData = computed(() => {
-// 	return {
-// 		labels: skills.value.categories.map((i) => {
-// 			return i.skills.map((j) => j.name);
-// 		}).flat(),
-// 		datasets: skills.value.categories.map((i) => {
-// 			return {
-// 				label: i.label,
-// 				backgroundColor: i.backgroundColor,
-// 				data: skills.value.categories.map((i) => {
-// 					return i.skills.map((j) => j.companyTotal);
-// 				}),
-// 			};
-// 		}),
-// 	};
-// });
 
 const sortingAlgorithm = ref(sortByNameAsc);
 

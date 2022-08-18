@@ -24,7 +24,6 @@ class Human extends Model
 
     public function getCategoryScoreAttribute($categoryId = 1)
     {
-
         return DB::table('human_skill')
             ->select(
                 'skills.name',
