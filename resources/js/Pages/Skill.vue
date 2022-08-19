@@ -77,7 +77,9 @@ const sortingAlgorithm = computed(() =>
 				{{ skill.name }}
 			</div>
 			<div class="pt-4">
-				{{ skill.category.name }}
+				<Link :href="route('category.show', skill.category)">
+					{{ skill.category.name }}
+				</Link>
 			</div>
 		</div>
 		<div class="flex items-center space-x-2 px-5 py-4 dark:text-white">
