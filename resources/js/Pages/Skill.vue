@@ -24,10 +24,10 @@ const data = computed(() => {
 		labels: props.skill.humans.map((h) => h.human.name),
 		datasets: [
 			{
-				label: 'Dataset 1',
+				label: props.skill.name,
 				data: props.skill.humans.map((i) => i.level),
 				borderColor: hexToRgbA(`#${props.skill.category.color}`, .75),
-				backgroundColor: hexToRgbA(`#${props.skill.category.color}`, 0.5),
+				backgroundColor: hexToRgbA(`#${props.skill.category.color}`, 0.3),
 			},
 		],
 	};
@@ -39,7 +39,7 @@ const options = {
 	// In this case, we are setting the border of each horizontal bar to be 2px wide
 	elements: {
 		bar: {
-			borderWidth: 2,
+			borderWidth: 1,
 		},
 	},
 	responsive: true,
