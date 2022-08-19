@@ -10,8 +10,16 @@ class SkillController extends Controller
 {
     public function show(Skill $skill)
     {
+        $skill = $skill->load([
+                'humans' => function ($query) {
+                    $query->where('level','>','0');
+                },
+                'humans.human',
+                'category'
+            ]);
+
         return inertia('Skill', [
-            'skill' => $skill->load('humans', 'humans.human'),
+            'skill' => $skill,
         ]);
     }
 }

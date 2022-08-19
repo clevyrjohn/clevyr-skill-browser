@@ -34,6 +34,18 @@ export function sortBySkillNameAsc(a, b) {
 	return 0;
 }
 
+export function sortByHumanNameDesc(a, b) {
+	if (a.human.name > b.human.name) return -1;
+	if (a.human.name < b.human.name) return 1;
+	return 0;
+}
+
+export function sortByHumanNameAsc(a, b) {
+	if (a.human.name > b.human.name) return 1;
+	if (a.human.name < b.human.name) return -1;
+	return 0;
+}
+
 export function sortByCompanyTotalDesc(a, b) {
 	if (a.companyTotal > b.companyTotal) return -1;
 	if (a.companyTotal < b.companyTotal) return 1;

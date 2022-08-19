@@ -16,4 +16,8 @@ class HumanSkill extends Pivot
     {
         return $this->belongsTo(Skill::class);
     }
+    public function scopeHasSkillLevel($q)
+    {
+        $q->where('level','>','0');
+    }
 }
