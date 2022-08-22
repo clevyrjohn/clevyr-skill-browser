@@ -8,7 +8,7 @@ import {
 	sortByTotalScoreDesc,
 	sortByTotalScoreAsc,
 } from '@/Composables/sortItems';
-import stackedBarChart from './Charts/stackedBarChart.js';
+import stackedBarChart from './Charts/StackedBarChart.vue';
 
 const { humans } = inject('tableData');
 const loaded = ref(false);

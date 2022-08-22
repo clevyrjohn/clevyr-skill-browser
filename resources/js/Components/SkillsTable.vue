@@ -1,14 +1,18 @@
 <script setup>
 import { ref, inject, computed, onMounted } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
-import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
+import {
+	// ChevronRightIcon,
+	ChevronUpIcon,
+	ChevronDownIcon,
+} from '@heroicons/vue/solid';
 import {
 	sortByNameDesc,
 	sortByNameAsc,
 	sortByCompanyTotalDesc,
 	sortByCompanyTotalAsc,
 } from '@/Composables/sortItems';
-import stackedBarChart from './Charts/stackedBarChart.js';
+import stackedBarChart from './Charts/StackedBarChart.vue';
 import { hexToRgbA } from '@/Composables/hexToRgbA';
 
 const { skills } = inject('tableData');

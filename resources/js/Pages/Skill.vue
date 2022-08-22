@@ -1,57 +1,18 @@
 <script setup>
+/* global route */
 import { ref, computed, onMounted } from 'vue';
 import TheLayout from '@/Layouts/TheLayout.vue';
 import { Link } from '@inertiajs/inertia-vue3';
+import { Inertia } from '@inertiajs/inertia';
 import {
 	sortByHumanNameAsc,
 	sortByHumanNameDesc,
 	sortByLevelAsc,
 	sortByLevelDesc,
 } from '@/Composables/sortItems';
-import stackedBarChart from '@/Components/Charts/stackedBarChart.js';
+import stackedBarChart from '@/Components/Charts/StackedBarChart.vue';
 import { hexToRgbA } from '@/Composables/hexToRgbA';
-
-const props = defineProps({
-	skill: Object,
-});
-
-const loaded = ref(false);
-
-onMounted(() => loaded.value = true);
-
-const data = computed(() => {
-	return {
-		labels: props.skill.humans.map((h) => h.human.name),
-		datasets: [
-			{
-				label: props.skill.name,
-				data: props.skill.humans.map((i) => i.level),
-				borderColor: hexToRgbA(`#${props.skill.category.color}`, .75),
-				backgroundColor: hexToRgbA(`#${props.skill.category.color}`, 0.3),
-			},
-		],
-	};
-});
-
-const options = {
-	indexAxis: 'y',
-	// Elements options apply to all of the options unless overridden in a dataset
-	// In this case, we are setting the border of each horizontal bar to be 2px wide
-	elements: {
-		bar: {
-			borderWidth: 1,
-		},
-	},
-	responsive: true,
-	plugins: {
-		legend: {
-			position: 'none',
-		},
-		title: {
-			display: false,
-		},
-	},
-};
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const sortKey = ref('level');
 const sortOrder = ref('desc');
@@ -65,6 +26,79 @@ const sortingAlgorithm = computed(() =>
 			sortByHumanNameDesc :
 			sortByHumanNameAsc,
 );
+
+const props = defineProps({
+	skill: Object,
+});
+
+const loaded = ref(false);
+onMounted(async () => loaded.value = true);
+
+const skill = computed(() => props.skill);
+// eslint-disable-next-line vue/no-side-effects-in-computed-properties
+const humans = computed(() => skill.value.humans.sort(sortingAlgorithm.value));
+const labels = computed(() => humans.value.map((h) => h.human.name));
+
+const data = computed(() => {
+	return {
+		labels: labels.value,
+		datasets: [
+			{
+				label: skill.value.name,
+				data: humans.value.map((i) => i.level),
+				borderColor: hexToRgbA(`#${skill.value.category.color}`, 1),
+				backgroundColor: hexToRgbA(`#${skill.value.category.color}`, 0.75),
+			},
+		],
+	};
+});
+
+const plugins = [ChartDataLabels];
+
+const options = {
+	onClick: (e, activeels, chart) => {
+		const clicked = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true)[0];
+		const human = humans.value[clicked.index].human;
+		Inertia.get(route('human.show', human));
+	},
+	indexAxis: 'y',
+	// Elements options apply to all of the options unless overridden in a dataset
+	// In this case, we are setting the border of each horizontal bar to be 2px wide
+	elements: {
+		bar: {
+			borderWidth: 1,
+		},
+	},
+	scales: {
+		y: {
+			ticks: {
+				display: false,
+			},
+		},
+	},
+	responsive: true,
+	plugins: {
+		datalabels: {
+			color: '#FFFFFF',
+			font: {
+				size: '16px',
+				family: 'Nunito',
+				weight: 'bold',
+			},
+			formatter: function(value, context) {
+				return `  ${context.chart.data.labels[context.dataIndex]}: ${value}`;
+			},
+			align: 'right',
+			anchor: 'start',
+		},
+		legend: {
+			display: false,
+		},
+		title: {
+			display: false,
+		},
+	},
+};
 
 </script>
 
@@ -101,38 +135,28 @@ const sortingAlgorithm = computed(() =>
 				type="radio"
 				name="sortOrder"
 				value="asc"
-			><label for="asc">Asc</label>
+			>
+			<label for="asc">
+				Asc
+			</label>
 			<input
 				v-model="sortOrder"
 				type="radio"
 				name="sortOrder"
 				value="desc"
-			><label
+			>
+			<label
 				for="desc"
-			>Desc</label>
+			>
+				Desc
+			</label>
 		</div>
 		<stackedBarChart
 			v-if="loaded"
+			class="cursor-pointer p-8"
 			:chart-data="data"
 			:chart-options="options"
+			:plugins="plugins"
 		/>
-		<div class="flex flex-row flex-wrap justify-around py-8">
-			<div
-				v-for="human in skill.humans.sort(sortingAlgorithm)"
-				:key="human.id"
-				class="duration-75 ease-in-out hover:scale-105 active:scale-100"
-			>
-				<Link :href="route('human.show', human.human.id)">
-					<div class="m-1 h-[90%] w-[9rem] rounded-md bg-gray-100 p-2 dark:bg-gray-700">
-						<div class="mx-auto max-w-fit rounded-full border-[1px] border-gray-200 bg-white p-2 px-4 text-xl font-bold dark:border-gray-700 dark:bg-gray-500 dark:text-gray-100">
-							{{ human.level }}
-						</div>
-						<div class="m-3 mt-2 max-w-[7rem] overflow-auto break-words font-bold dark:text-gray-100">
-							{{ human.human.name }}
-						</div>
-					</div>
-				</Link>
-			</div>
-		</div>
 	</TheLayout>
 </template>

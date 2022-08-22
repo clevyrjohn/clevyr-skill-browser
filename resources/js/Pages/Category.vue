@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from 'vue';
 import TheLayout from '@/Layouts/TheLayout.vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import { sortByLevelDesc } from '@/Composables/sortItems';
-import stackedBarChart from '@/Components/Charts/stackedBarChart';
+import stackedBarChart from '@/Components/Charts/StackedBarChart.vue';
 import { hexToRgbA } from '@/Composables/hexToRgbA.js';
 
 const props = defineProps({
