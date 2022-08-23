@@ -1,36 +1,34 @@
 <script>
-import { h, defineComponent } from 'vue';
-import { Bar } from 'vue-chartjs';
+import { defineComponent, h } from 'vue';
+import { Radar } from 'vue-chartjs';
 import {
 	Chart as ChartJS,
 	Title,
 	Tooltip,
 	Legend,
-	BarElement,
-	CategoryScale,
-	LinearScale,
+	PointElement,
+	RadialLinearScale,
+	LineElement,
 } from 'chart.js';
-import zoomPlugin from 'chartjs-plugin-zoom';
-import ChartDeferred from 'chartjs-plugin-deferred';
 
 ChartJS.register(
 	Title,
 	Tooltip,
 	Legend,
-	BarElement,
-	CategoryScale,
-	LinearScale,
+	PointElement,
+	RadialLinearScale,
+	LineElement,
 );
 
 export default defineComponent({
-	name: 'BarChart',
+	name: 'RadarChart',
 	components: {
-		Bar,
+		Radar,
 	},
 	props: {
 		chartId: {
 			type: String,
-			default: 'bar-chart',
+			default: 'radar-chart',
 		},
 		chartData: {
 			type: Object,
@@ -42,15 +40,6 @@ export default defineComponent({
 				return {
 					responsive: true,
 					maintainAspectRatio: false,
-					animation: true,
-					scales: {
-						x: {
-							stacked: true,
-						},
-						y: {
-							stacked: true,
-						},
-					},
 				};
 			},
 		},
@@ -66,22 +55,28 @@ export default defineComponent({
 			default: '',
 			type: String,
 		},
+		styles: {
+			type: Object,
+			default: () => {},
+		},
 		plugins: {
-			default: () => [zoomPlugin, ChartDeferred],
 			type: Array,
+			default: () => [],
 		},
 	},
 	setup(props) {
 		return () =>
-			h(Bar, {
+			h(Radar, {
 				chartData: props.chartData,
 				chartOptions: props.chartOptions,
-				plugins: props.plugins,
 				chartId: props.chartId,
 				width: props.width,
 				height: props.height,
 				cssClasses: props.cssClasses,
+				styles: props.styles,
+				plugins: props.plugins,
 			});
 	},
 });
+
 </script>

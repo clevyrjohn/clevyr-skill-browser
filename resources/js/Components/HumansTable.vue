@@ -1,23 +1,35 @@
 <script setup>
 import { ref, computed, inject, onMounted } from 'vue';
-import { ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
-import { Link } from '@inertiajs/inertia-vue3';
 import {
+	sortByIdAsc,
+	sortByIdDesc,
 	sortByNameDesc,
 	sortByNameAsc,
 	sortByTotalScoreDesc,
 	sortByTotalScoreAsc,
 } from '@/Composables/sortItems';
-import stackedBarChart from './Charts/StackedBarChart.vue';
+import StackedBarChart from './Charts/StackedBarChart.vue';
+import TransitionSlideFade from '@/Assets/TransitionSlideFade.vue';
+import ChartLoading from '@/Components/ChartLoading.vue';
 
-const { humans } = inject('tableData');
-const loaded = ref(false);
+const {
+	humans,
+	isDataLoaded,
+	sortKey,
+	sortOrder,
+} = inject('tableData');
 
-onMounted(() => loaded.value = true);
+const isComponentMounted = ref(false);
+
+onMounted(() => isComponentMounted.value = true);
+
+const sortedHumans = computed(() => {
+	return { ...humans.value }.humans.sort(sortingAlgorithm.value);
+});
 
 const chartData = computed(() => {
 	return {
-		labels: humans.value.humans.map((i) => i.name),
+		labels: sortedHumans.value.map((i) => i.name),
 		datasets: humans.value.categories.map((j) => {
 			return {
 				label: j.label,
@@ -30,75 +42,36 @@ const chartData = computed(() => {
 	};
 });
 
-const sortingAlgorithm = ref(sortByNameAsc);
+const sortingAlgorithm = computed(() =>
+	sortKey.value == 'id' ?
+		sortOrder.value == 'desc' ?
+			sortByIdDesc :
+			sortByIdAsc :
+		sortKey.value == 'total' ?
+			sortOrder.value == 'desc' ?
+				sortByTotalScoreDesc :
+				sortByTotalScoreAsc :
+			sortOrder.value == 'desc' ?
+				sortByNameDesc :
+				sortByNameAsc,
+);
 
-function sortByName() {
-	sortingAlgorithm.value = sortingAlgorithm.value === sortByNameAsc ? sortByNameDesc : sortByNameAsc;
-}
-
-function sortByTotalScore() {
-	sortingAlgorithm.value = sortingAlgorithm.value === sortByTotalScoreDesc ? sortByTotalScoreAsc : sortByTotalScoreDesc;
-}
+const chartHeight = 500;
 
 </script>
 
 <template>
-	<stackedBarChart
-		v-if="loaded"
-		:chart-data="chartData"
-	/>
-	<div
-		v-else
-		class="h-[250px]"
-	/>
-	<table class="relative z-40 mt-12 w-full border-separate border-spacing-1">
-		<thead class="font-serif text-lg">
-			<th
-				class="text-left"
-				@click="sortByName"
-			>
-				Name
-				<ChevronDownIcon
-					v-show="sortingAlgorithm === sortByNameAsc"
-					class="inline h-7 w-7"
-				/>
-				<ChevronUpIcon
-					v-show="sortingAlgorithm === sortByNameDesc"
-					class="inline h-7 w-7"
-				/>
-			</th>
-			<th
-				class="text-right"
-				@click="sortByTotalScore"
-			>
-				<ChevronDownIcon
-					v-show="sortingAlgorithm === sortByTotalScoreDesc"
-					class="inline h-7 w-7"
-				/>
-				<ChevronUpIcon
-					v-show="sortingAlgorithm === sortByTotalScoreAsc"
-					class="inline h-7 w-7"
-				/>
-				Total Score
-			</th>
-		</thead>
-		<template
-			v-for="human in humans.humans.sort(sortingAlgorithm)"
-			:key="human.id"
+	<TransitionSlideFade>
+		<StackedBarChart
+			v-if="isComponentMounted && isDataLoaded"
+			:chart-data="chartData"
+			:height="chartHeight"
+		/>
+		<div
+			v-else
+			class="flex h-[500px] items-center justify-center"
 		>
-			<tr class="static z-40 text-lg">
-				<td>
-					<Link
-						class="hover:underline"
-						:href="`/h/${human.id}`"
-					>
-						{{ human.name }}
-					</Link>
-				</td>
-				<td class="text-right">
-					{{ human.totalScore }}
-				</td>
-			</tr>
-		</template>
-	</table>
+			<ChartLoading />
+		</div>
+	</TransitionSlideFade>
 </template>

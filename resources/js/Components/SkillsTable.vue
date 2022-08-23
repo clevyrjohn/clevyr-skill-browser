@@ -1,109 +1,132 @@
 <script setup>
 import { ref, inject, computed, onMounted } from 'vue';
-import { Link } from '@inertiajs/inertia-vue3';
 import {
-	// ChevronRightIcon,
-	ChevronUpIcon,
-	ChevronDownIcon,
-} from '@heroicons/vue/solid';
-import {
+	sortByIdAsc,
+	sortByIdDesc,
 	sortByNameDesc,
 	sortByNameAsc,
 	sortByCompanyTotalDesc,
 	sortByCompanyTotalAsc,
 } from '@/Composables/sortItems';
-import stackedBarChart from './Charts/StackedBarChart.vue';
+import StackedBarChart from './Charts/StackedBarChart.vue';
 import { hexToRgbA } from '@/Composables/hexToRgbA';
+import TransitionSlideFade from '@/Assets/TransitionSlideFade.vue';
+import ChartLoading from '@/Components/ChartLoading.vue';
 
-const { skills } = inject('tableData');
-const loaded = ref(false);
+const {
+	skills,
+	isDataLoaded,
+	sortKey,
+	sortOrder,
+} = inject('tableData');
 
-onMounted(() => loaded.value = true);
+const isComponentMounted = ref(false);
+
+onMounted(() => isComponentMounted.value = true);
+
+const sortedSkills = computed(() => [...skills.value].sort(sortingAlgorithm.value));
 
 const chartData = computed(() => {
 	return {
-		labels: skills.value.skills.map((el) => el.name),
+		labels: sortedSkills.value.map((el) => el.name),
 		datasets: [
 			{
-				label: 'Skills',
-				backgroundColor: hexToRgbA('#'+'FF9100', 0.85),
-				borderColor: hexToRgbA('#'+'E97724', 1.0),
-				data: skills.value.skills.map((el) => el.companyTotal),
+				backgroundColor: sortedSkills.value.map((el) => hexToRgbA('#'+el.category.color, .85)),
+				borderColor: sortedSkills.value.map((el) => hexToRgbA('#'+el.category.color, 1.0)),
+				data: sortedSkills.value.map((el) => el.companyTotal),
 			},
 		],
 	};
 });
 
-const sortingAlgorithm = ref(sortByNameAsc);
+const chartOptions = {
+	responsive: true,
+	maintainAspectRatio: false,
+	animation: true,
+	plugins: {
+		legend: {
+			display: false,
+		},
+		title: {
+			display: false,
+		},
+	},
+	scales: {
+		x: {
+			stacked: false,
+		},
+		y: {
+			stacked: false,
+		},
+	},
+};
 
-function sortByName() {
-	sortingAlgorithm.value = sortingAlgorithm.value === sortByNameAsc ? sortByNameDesc : sortByNameAsc;
-}
+// const cChartOptions = {
+// 		zoom: {
+// 			limits: {
+// 				y: { min: 0, max: 6 },
+// 			},
+// 			pan: {
+// 				enabled: true,
+// 				threshhold: 6,
+// 				mode: 'xy',
+// 			},
+// 			zoom: {
+// 				wheel: {
+// 					enabled: false,
+// 					speed: '0.01',
+// 				},
+// 				pinch: {
+// 					enabled: false,
+// 				},
+// 				drag: {
+// 					enabled: false,
+// 				},
+// 				mode: 'x',
+// 			},
+// 		},
+// 	},
+// 	transitions: {
+// 		zoom: {
+// 			animation: {
+// 				duration: 1000,
+// 				easing: 'easeOutCubic',
+// 			},
+// 		},
+// 	},
+// };
 
-function sortByCompanyTotal() {
-	sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
-}
+const sortingAlgorithm = computed(() =>
+	sortKey.value == 'id' ?
+		sortOrder.value == 'desc' ?
+			sortByIdDesc :
+			sortByIdAsc :
+		sortKey.value == 'total' ?
+			sortOrder.value == 'desc' ?
+				sortByCompanyTotalDesc :
+				sortByCompanyTotalAsc :
+			sortOrder.value == 'desc' ?
+				sortByNameDesc :
+				sortByNameAsc,
+);
+
+const chartHeight = 500;
 
 </script>
 
 <template>
-	<stackedBarChart
-		v-if="loaded"
-		:chart-data="chartData"
-		:height="500"
-	/>
-	<div
-		v-else
-		class="h-[500px]"
-	/>
-	<table class="relative z-40 w-full border-separate border-spacing-1">
-		<thead class="font-serif text-lg">
-			<th
-				class="text-left"
-				@click="sortByName"
-			>
-				Name
-				<ChevronDownIcon
-					v-show="sortingAlgorithm === sortByNameAsc"
-					class="inline h-7 w-7"
-				/>
-				<ChevronUpIcon
-					v-show="sortingAlgorithm === sortByNameDesc"
-					class="inline h-7 w-7"
-				/>
-			</th>
-			<th
-				class="text-right"
-				@click="sortByCompanyTotal"
-			>
-				<ChevronDownIcon
-					v-show="sortingAlgorithm === sortByCompanyTotalDesc"
-					class="inline h-7 w-7"
-				/>
-				<ChevronUpIcon
-					v-show="sortingAlgorithm === sortByCompanyTotalAsc"
-					class="inline h-7 w-7"
-				/>
-				Total Score
-			</th>
-		</thead>
-		<template
-			v-for="skill in skills.skills.sort(sortingAlgorithm)"
-			:key="skill.id"
+	<TransitionSlideFade>
+		<StackedBarChart
+			v-if="isComponentMounted && isDataLoaded"
+			:chart-data="chartData"
+			:chart-options="chartOptions"
+			:height="chartHeight"
+		/>
+		<div
+			v-else
+			class="flex h-[500px] items-center justify-center"
 		>
-			<tr class="static z-40 text-lg">
-				<td>
-					<Link
-						class="hover:underline"
-						:href="`/s/${skill.id}`"
-					>
-						{{ skill.name }}
-					</Link>
-				</td>
-				<td class="text-right">
-					{{ skill.companyTotal }}
-				</td>
-			</tr>
-		</template>
-	</table>
+			<ChartLoading />
+		</div>
+	</TransitionSlideFade>
 </template>

@@ -1,45 +1,40 @@
 <script setup>
-import { ref, onMounted, provide } from 'vue';
+import { ref, onMounted, provide, computed } from 'vue';
 import TheLayout from '@/Layouts/TheLayout.vue';
 import { Head } from '@inertiajs/inertia-vue3';
 import CategoriesTable from '@/Components/CategoriesTable.vue';
 import HumansTable from '../Components/HumansTable.vue';
 import SkillsTable from '../Components/SkillsTable.vue';
+import TransitionSlideFade from '@/Assets/TransitionSlideFade.vue';
 
 defineProps({
 	canLogin: Boolean,
 	canRegister: Boolean,
 });
 
-const activeTab = ref('category');
+const categories = ref([{
+	color: '000000',
+	companyTotal: null,
+	name: null,
+	description: null,
+	id: null,
+}]);
 
-const changeTab = (value) => activeTab.value = value;
-
-const categories = ref([
-	{
-		color: '000000',
-		companyTotal: null,
-		name: null,
-		description: null,
-		id: null,
-	},
-]);
 const humans = ref({
 	humans: [],
 	categories: [],
 });
-const emptySkill = {
+
+const skills = ref([{
 	category_id: null,
+	category: {
+		color: '000000',
+	},
 	companyTotal: null,
 	description: null,
 	id: null,
 	name: null,
-};
-const skills = ref({
-	skills: [emptySkill],
-	skills2: [emptySkill],
-	// categories: [],
-});
+}]);
 
 onMounted(async () => {
 	let res;
@@ -49,28 +44,40 @@ onMounted(async () => {
 		resJson = await res.json();
 		categories.value = resJson.data;
 	} catch (error) {
-		console.log('Could not load catgories');
+		console.error(error);
 	};
 	try {
 		res = await fetch(route('api.humanstable'));
 		resJson = await res.json();
 		humans.value = resJson.data;
 	} catch (error) {
-		console.log('Could not load humans');
-	}
+		console.error(error);
+	};
 	try {
 		res = await fetch(route('api.skills'));
 		resJson = await res.json();
 		skills.value = resJson.data;
 	} catch (error) {
-		console.log('Could not load skills');
-	}
+		console.error(error);
+	};
 });
+
+const isDataLoaded = computed(() =>
+	categories.value.length > 1 &&
+		humans.value.humans.length > 0 &&
+		skills.value.length > 1,
+);
+
+const sortKey = ref('id');
+const sortOrder = ref('asc');
 
 provide('tableData', {
 	categories,
 	humans,
 	skills,
+	isDataLoaded,
+	sortKey,
+	sortOrder,
 });
 
 </script>
@@ -78,62 +85,63 @@ provide('tableData', {
 <template>
 	<Head title="Welcome" />
 	<TheLayout>
-		<div class="relative z-50 pt-4 pb-6 text-center font-serif text-5xl font-bold dark:font-normal dark:text-white">
-			Browse by...
-		</div>
-
-		<div class="relative z-50 flex flex-row justify-around divide-x divide-blue-light rounded-t-md border-x-[1px] bg-gray-500 font-bold text-white">
-			<div
-				class="basis-1/3 cursor-pointer rounded-tl-md p-5 text-center duration-75 ease-in-out hover:scale-105 hover:bg-blue-light active:scale-100"
-				:class="activeTab === 'category' ? 'bg-blue-light' : ''"
-				@click="changeTab('category')"
-			>
-				Category
-			</div>
-			<div
-				class="basis-1/3 cursor-pointer p-5 text-center duration-75 ease-in-out hover:scale-105 hover:bg-blue-light active:scale-100"
-				:class="activeTab === 'human' ? 'bg-blue-light' : ''"
-				@click="changeTab('human')"
-			>
-				Human
-			</div>
-			<div
-				class="basis-1/3 cursor-pointer rounded-tr-md p-5 text-center duration-75 ease-in-out hover:scale-105 hover:bg-blue-light active:scale-100"
-				:class="activeTab === 'skill' ? 'bg-blue-light' : ''"
-				@click="activeTab = 'skill'"
-			>
-				Skill
-			</div>
-		</div>
-
-		<div
-			class="relative z-50 min-h-fit bg-white dark:bg-gray-700"
-		>
-			<div class="mx-auto py-10 px-[10%] dark:text-white">
-				<div v-if="activeTab === 'category'">
-					<CategoriesTable />
+		<div class="relative z-50 min-h-fit bg-white dark:bg-gray-700">
+			<div class="mx-auto py-8 px-[2.5%] dark:text-white">
+				<div class="sticky top-0 flex w-fit items-center space-x-4 rounded-b-lg pt-4 pr-4 pb-2 dark:bg-gray-700">
+					<div>Sort by</div>
+					<select
+						v-model="sortKey"
+						class="rounded-md bg-white dark:bg-gray-700"
+					>
+						<option value="id">
+							Spreadsheet Order
+						</option>
+						<option value="name">
+							Name
+						</option>
+						<option value="total">
+							Total
+						</option>
+					</select>
+					<input
+						v-model="sortOrder"
+						type="radio"
+						name="sortOrder"
+						value="asc"
+					>
+					<label for="asc">
+						Asc
+					</label>
+					<input
+						v-model="sortOrder"
+						type="radio"
+						name="sortOrder"
+						value="desc"
+					>
+					<label
+						for="desc"
+					>
+						Desc
+					</label>
 				</div>
-				<div v-if="activeTab === 'human'">
-					<HumansTable />
-				</div>
-				<div v-if="activeTab === 'skill'">
-					<SkillsTable />
-				</div>
+				<TransitionSlideFade>
+					<div class="flex flex-col space-y-4 px-[7.5%]">
+						<div class="rounded-md py-4 text-center font-serif text-2xl">
+							Categories
+						</div>
+						<CategoriesTable />
+						<div class="rounded-md pt-10 pb-4 text-center font-serif text-2xl">
+							Skills
+						</div>
+						<SkillsTable />
+						<div class="rounded-md pt-10 pb-4 text-center font-serif text-2xl">
+							People
+						</div>
+						<HumansTable />
+					</div>
+				</TransitionSlideFade>
 			</div>
 		</div>
 	</TheLayout>
 </template>
 
-<style scoped>
-.slide-enter-active {
-    transition: all 0.15s ease-out;
-}
-.slide-leave-active {
-    transition: all 0.15s cubic-bezier(1, 0.5, 0.8, 1);
-}
-.slide-enter-from,
-.slide-leave-to {
-    transform: translateY(-2%);
-    opacity: 0;
-}
-</style>

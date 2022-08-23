@@ -1,3 +1,15 @@
+export function sortByIdDesc(a, b) {
+	if (a.id > b.id) return -1;
+	if (a.id < b.id) return 1;
+	return 0;
+}
+
+export function sortByIdAsc(a, b) {
+	if (a.id > b.id) return 1;
+	if (a.id < b.id) return -1;
+	return 0;
+}
+
 export function sortByLevelDesc(a, b) {
 	if (a.level > b.level) return -1;
 	if (a.level < b.level) return 1;

@@ -48,6 +48,7 @@ const data = computed(() => {
 				data: humans.value.map((i) => i.level),
 				borderColor: hexToRgbA(`#${skill.value.category.color}`, 1),
 				backgroundColor: hexToRgbA(`#${skill.value.category.color}`, 0.75),
+				hoverBorderWidth: 2,
 			},
 		],
 	};
@@ -57,9 +58,11 @@ const plugins = [ChartDataLabels];
 
 const options = {
 	onClick: (e, activeels, chart) => {
-		const clicked = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true)[0];
-		const human = humans.value[clicked.index].human;
-		Inertia.get(route('human.show', human));
+		try {
+			const clicked = chart.getElementsAtEventForMode(e, 'nearest', { intersect: true }, true)[0];
+			const human = humans.value[clicked.index].human;
+			Inertia.get(route('human.show', human));
+		} catch {}
 	},
 	indexAxis: 'y',
 	// Elements options apply to all of the options unless overridden in a dataset
@@ -81,7 +84,6 @@ const options = {
 		datalabels: {
 			color: '#FFFFFF',
 			font: {
-				size: '16px',
 				family: 'Nunito',
 				weight: 'bold',
 			},
@@ -153,7 +155,7 @@ const options = {
 		</div>
 		<stackedBarChart
 			v-if="loaded"
-			class="cursor-pointer p-8"
+			class="p-8"
 			:chart-data="data"
 			:chart-options="options"
 			:plugins="plugins"

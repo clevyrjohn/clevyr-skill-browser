@@ -5,20 +5,27 @@ import TransitionSlideFade from '@/Assets/TransitionSlideFade.vue';
 </script>
 
 <template>
-<div class="bg-gray-200 dark:bg-gray-900 p-6 min-h-[100vh]">
-
-    <div class="container max-w-7xl mx-auto ">
-        <Link href="/" class="flex flex-row items-center mb-4 p-2 bg-gray-100 dark:bg-gray-900 max-w-fit pr-4 rounded-lg hover:scale-105 ease-in-out duration-75 active:scale-100">
-            <ClevyrLogo class="h-10 m-4 mr-[0.8rem]" />
-            <div class="text-blue-light tracking-[-.005rem] text-[2.6rem] mb-[0.1rem] font-serif">skill browser</div>
-        </Link>
-        <div class="bg-white dark:bg-gray-800 rounded-md shadow-lg">
-            <TransitionSlideFade>
-                <div v-if="$slots.default" class="p-4 divide-y divide-blue dark:divide-blue-light">
-                    <slot />
-                </div>
-            </TransitionSlideFade>
-        </div>
-    </div>
-</div>
+	<div class="min-h-[100vh] bg-gray-200 p-6 dark:bg-gray-900">
+		<div class="mx-auto">
+			<Link
+				href="/"
+				class="mb-4 flex max-w-fit flex-row items-center rounded-lg bg-gray-100 p-2 pr-4 duration-75 ease-in-out hover:scale-105 active:scale-100 dark:bg-gray-900"
+			>
+				<ClevyrLogo class="m-4 mr-[0.8rem] h-10" />
+				<div class="mb-[0.1rem] font-serif text-[2.6rem] tracking-[-.005rem] text-blue-light">
+					skill browser
+				</div>
+			</Link>
+			<div class="rounded-md bg-white shadow-lg dark:bg-gray-800">
+				<TransitionSlideFade>
+					<div
+						v-if="$slots.default"
+						class="divide-y divide-blue p-4 dark:divide-blue-light"
+					>
+						<slot />
+					</div>
+				</TransitionSlideFade>
+			</div>
+		</div>
+	</div>
 </template>

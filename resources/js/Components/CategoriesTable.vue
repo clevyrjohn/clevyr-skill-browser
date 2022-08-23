@@ -1,8 +1,9 @@
 <script setup>
 import { ref, computed, inject, onMounted } from 'vue';
-import { Link } from '@inertiajs/inertia-vue3';
-import { ChevronRightIcon, ChevronUpIcon, ChevronDownIcon } from '@heroicons/vue/solid';
+
 import {
+	sortByIdAsc,
+	sortByIdDesc,
 	sortByNameDesc,
 	sortByNameAsc,
 	sortByCompanyTotalDesc,
@@ -10,96 +11,66 @@ import {
 } from '@/Composables/sortItems';
 import { hexToRgbA } from '@/Composables/hexToRgbA';
 import PolarAreaChart from './Charts/PolarAreaChart.vue';
+import TransitionSlideFade from '@/Assets/TransitionSlideFade.vue';
+import ChartLoading from '@/Components/ChartLoading.vue';
 
-const { categories } = inject('tableData');
-const loaded = ref(false);
+const {
+	categories,
+	isDataLoaded,
+	sortKey,
+	sortOrder,
+} = inject('tableData');
+const isComponentMounted = ref(false);
 
-onMounted(() => loaded.value = true);
+onMounted(() => isComponentMounted.value = true);
 
-const sortingAlgorithm = ref(sortByNameAsc);
+const sortingAlgorithm = computed(() =>
+	sortKey.value == 'id' ?
+		sortOrder.value == 'desc' ?
+			sortByIdDesc :
+			sortByIdAsc :
+		sortKey.value == 'total' ?
+			sortOrder.value == 'desc' ?
+				sortByCompanyTotalDesc :
+				sortByCompanyTotalAsc :
+			sortOrder.value == 'desc' ?
+				sortByNameDesc :
+				sortByNameAsc,
+);
 
-function sortByName() {
-	sortingAlgorithm.value = sortingAlgorithm.value === sortByNameAsc ? sortByNameDesc : sortByNameAsc;
-}
-
-function sortByCompanyTotal() {
-	sortingAlgorithm.value = sortingAlgorithm.value === sortByCompanyTotalDesc ? sortByCompanyTotalAsc : sortByCompanyTotalDesc;
-}
+const sortedCategories = computed(() => [...categories.value].sort(sortingAlgorithm.value));
 
 const chartData = computed(() => {
 	return {
-		labels: categories.value.map((el) => el.name),
+		labels: sortedCategories.value.map((el) => el.name),
 		datasets: [
 			{
 				label: 'Company Skills by Category',
-				backgroundColor: categories.value.map((el) => hexToRgbA('#'+el.color, 0.5)),
-				data: categories.value.map((el) => el.companyTotal),
+				backgroundColor: sortedCategories.value.map((el) => hexToRgbA('#'+el.color, 0.5)),
+				data: sortedCategories.value.map((el) => el.companyTotal),
 			},
 		],
 	};
 });
 
+const chartHeight = 375;
+
 </script>
 
 <template>
-	<PolarAreaChart
-		v-if="loaded"
-		:chart-data="chartData"
-	/>
-	<div
-		v-else
-		class="h-[250px]"
-	/>
-	<table class="relative z-40 mt-14 w-full border-separate border-spacing-1">
-		<thead class="font-serif text-lg">
-			<th
-				class="text-left"
-				@click="sortByName"
-			>
-				Name
-				<ChevronDownIcon
-					v-show="sortingAlgorithm === sortByNameAsc"
-					class="inline h-7 w-7"
-				/>
-				<ChevronUpIcon
-					v-show="sortingAlgorithm === sortByNameDesc"
-					class="inline h-7 w-7"
-				/>
-			</th>
-			<th
-				class="text-right"
-				@click="sortByCompanyTotal"
-			>
-				<ChevronDownIcon
-					v-show="sortingAlgorithm === sortByCompanyTotalDesc"
-					class="inline h-7 w-7"
-				/>
-				<ChevronUpIcon
-					v-show="sortingAlgorithm === sortByCompanyTotalAsc"
-					class="inline h-7 w-7"
-				/>
-				Company Score
-			</th>
-		</thead>
-		<template
-			v-for="category in categories.sort(sortingAlgorithm)"
-			:key="category.id"
+	<TransitionSlideFade>
+		<PolarAreaChart
+			v-if="isComponentMounted && isDataLoaded"
+			:chart-data="chartData"
+			:height="chartHeight"
+		/>
+		<div
+			v-else
+			class="flex h-[375px] items-center justify-center"
 		>
-			<tr class="static z-40 text-lg">
-				<td class="">
-					<Link
-						class="hover:underline"
-						:href="`/c/${category.id}`"
-					>
-						{{ category.name }}
-					</Link>
-				</td>
-				<td class="text-right">
-					{{ category.companyTotal }}
-				</td>
-			</tr>
-		</template>
-	</table>
+			<ChartLoading />
+		</div>
+	</TransitionSlideFade>
 </template>
 
 <style scoped>

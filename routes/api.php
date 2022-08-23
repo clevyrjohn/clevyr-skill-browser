@@ -71,19 +71,5 @@ Route::get('/humanstable', function () {
 })->name('api.humanstable');
 
 Route::get('/skills', function () {
-    $skills = array_map(
-        function ($skill) {
-            return [
-                'id' => $skill['id'],
-                'name' => $skill['name'],
-                'companyTotal' => $skill['companyTotal'],
-                'category' => $skill['category']['name'],
-            ];
-        },
-        Skill::all()->load('category')->append(['companyTotal'])->toArray()
-    );
-
-    return new SkillResource([
-        'skills' => $skills,
-    ]);
+    return new SkillResource(Skill::all()->load('category')->append(['companyTotal']));
 })->name('api.skills');
