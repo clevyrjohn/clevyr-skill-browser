@@ -1,4 +1,7 @@
 # Clevyr Skill Browser
+===
+
+# Clevyr Skill Browser
 
 ### How to make it work:
 
@@ -12,16 +15,39 @@ In your terminal, `cd` into the repository's root directory. Then type:
 
 ```
 source .zshrc
-init
-sail up -d
-sail npm install
-sail artisan key:generate
-sail artisan migrate
-sail npm run dev
+dc up -d
 ```
 
-The browser should be available at http://clevyr-skill-browser.test
+You should now be able to access the site at https://clevyr.run.
 
-To import data, go to http://clevyr-skill-browser.test/import . If everything looks good, click "Import!" and wait about 10-15 seconds.
+## Import 
+
+To import data, go to /import . If everything looks good, click "Import!" and wait about 10-15 seconds.
 
 You should now be able to browse the data contained in Anne's spreadsheet.
+
+## Linting
+```
+# PHP Linting
+docker-compose exec app ./vendor/bin/phpstan analyse
+
+# JS Linting
+docker-compose exec hot npm run lint
+docker-compose exec hot npm run stylelint-lint
+```
+
+## [Laravel Pint](https://laravel.com/docs/9.x/pint)
+Laravel Pint is an opinionated PHP code style fixer for minimalists.
+```
+./vendor/bin/pint
+```
+
+## Testing
+```
+# Run the PHP Pest / UnitTest Tests
+docker-compose exec app php artisan test
+
+# Run the Laravel Dusk (i.e. browser-driven) tests
+# NOTE: You have to disable the Vite hot reloader to run these.
+docker-compose stop hot && docker-compose exec app php artisan pest:dusk && docker-compose start hot
+```

@@ -24,11 +24,20 @@ use App\Models\HumanSkill;
 */
 
 Route::get('/', function () {
-
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 });
 
 Route::get('/import', [SpreadsheetController::class, 'import']);
@@ -37,13 +46,3 @@ Route::post('/import', [SpreadsheetController::class, 'store']);
 Route::get('/c/{category}', [CategoryController::class, 'show'])->name('category.show');
 Route::get('/h/{human}', [HumanController::class, 'show'])->name('human.show');
 Route::get('/s/{skill}', [SkillController::class, 'show'])->name('skill.show');
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/mobile', function () {
-    return Inertia::render('Mobile');
-});
-
-require __DIR__ . '/auth.php';

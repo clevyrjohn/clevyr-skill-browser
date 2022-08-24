@@ -50,7 +50,7 @@ Route::get('/humanstable', function () {
             $categories
         ),
         'humans' => array_map(
-            function ($human) use ($categories) {
+            function ($human) {
                 $categoryScores = [];
 
                 foreach ($human['categoryScores'] as $categoryScore) {

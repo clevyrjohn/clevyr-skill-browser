@@ -5,6 +5,15 @@ import vue from '@vitejs/plugin-vue';
 import svgLoader from 'vite-svg-loader';
 
 export default defineConfig({
+	server: {
+		host: true,
+		strictPort: true,
+		hmr: {
+			host: 'hot.clevyr.run',
+			clientPort: 443,
+			protocol: 'wss',
+		},
+	},
 	plugins: [
 		laravel({
 			input: 'resources/js/app.js',

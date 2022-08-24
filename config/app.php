@@ -180,13 +180,13 @@ return [
         Illuminate\Session\SessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
-        Illuminate\View\ViewServiceProvider::class,        
+        Illuminate\View\ViewServiceProvider::class,
 
         /*
          * Package Service Providers...
          */
 
-        PulkitJalan\Google\GoogleServiceProvider::class,
+		PulkitJalan\Google\GoogleServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -195,7 +195,13 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\HorizonServiceProvider::class,
+        App\Providers\NovaServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\TelescopeServiceProvider::class,
+        App\Providers\FortifyServiceProvider::class,
+        App\Providers\JetstreamServiceProvider::class,
+        App\Providers\SocialstreamServiceProvider::class,
 
     ],
 
