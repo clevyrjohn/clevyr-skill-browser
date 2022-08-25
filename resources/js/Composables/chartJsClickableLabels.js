@@ -35,7 +35,7 @@ const getLabelHitboxes = (scales) => (Object.values(scales).map((s) => {
 		};
 	} else {
 		return {
-			scaleId: 'r',
+			scaleId: s.axis,
 			labels: s._pointLabelItems.map((e, i) => {
 				return {
 					x: e.left,
@@ -55,20 +55,45 @@ export const chartJsClickableLabels = {
 	afterEvent: (chart, event, opts) => {
 		const options = chart.options.plugins.chartJsClickableLabels;
 		const evt = event.event;
+		const colorArray = [];
+		const [found, labelInfo] = findLabel(getLabelHitboxes(chart.scales), evt);
+		const points = chart.getElementsAtEventForMode(event.event, 'nearest', {
+			intersect: true,
+		}, true);
+		let datapoint = null;
 		if (evt.type == 'mousemove') {
-			const [found, labelInfo] = findLabel(getLabelHitboxes(chart.scales), evt);
-			if (found) {
-				console.log(chart.getElementsAtEventForMode(evt, 'point', { intersect: true }, false));
-				// console.log(chart.helpers);
+			if (found || points[0]) {
+				// console.log(chart.canvas.style);
+				if (found) {
+					datapoint = labelInfo.index;
+				} else {
+					datapoint = points[0].index;
+				}
+				for (let i = 0; i < chart.data.datasets[0].backgroundColor.length; i++) {
+					if (datapoint === i) {
+						colorArray.push(options.hoverColor);
+					} else {
+						colorArray.push(options.tickColor);
+					}
+				}
+				chart.config.options.scales.r.pointLabels.color = colorArray;
+				chart.canvas.style.cursor = 'pointer';
+			} else {
+				chart.config.options.scales.r.pointLabels.color = options.tickColor;
+				chart.canvas.style.cursor = 'default';
 			}
+			return;
 		} else if (evt.type !== 'click') {
 			return;
 		} else {
-			const [found, labelInfo] = findLabel(getLabelHitboxes(chart.scales), evt);
-			if (found) {
+			if (found || points[0]) {
+				if (found) {
+					datapoint = labelInfo.index;
+				} else {
+					datapoint = points[0].index;
+				}
 				const routeName = options.routeName;
-				const linkIndex = labelInfo.index;
-				Inertia.get(route(routeName, linkIndex));
+				Inertia.get(route(routeName, datapoint));
 			}
 		}
 	},

@@ -64,10 +64,7 @@ export default defineComponent({
 	},
 	setup() {
 		const polarArea = ref(null);
-		onMounted(() => {
-			// console.log(polarArea.value.chart);
-			// console.log(polarArea.value.helpers); // undefined
-		});
+
 		return {
 			polarArea,
 			chartJsClickableLabels,

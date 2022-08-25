@@ -77,6 +77,11 @@ const chartFontColor = computed(() =>
 		'#ABABAB' :
 		'#454545',
 );
+const chartHoverColor = computed(() =>
+	preferredColor.value == 'dark' ?
+		'#FFFFFF' :
+		'#F9A340',
+);
 
 const chartMarginTop = computed(() =>
 	currentBreakpoint.value == 'xs' ?
@@ -102,12 +107,15 @@ const chartOptions = computed(() => {
 	return {
 		responsive: true,
 		maintainAspectRatio: true,
+		onHover: (context) => {
+			context.chart.update();
+		},
 		scales: {
 			r: {
 				ticks: {
 					display: false,
 					backdropColor: 'rgba(0,0,0,0)',
-					color: chartFontColor.value,
+					color: [chartFontColor.value],
 				},
 				pointLabels: {
 					display: true,
@@ -126,6 +134,8 @@ const chartOptions = computed(() => {
 			},
 			chartJsClickableLabels: {
 				routeName: 'category.show',
+				tickColor: chartFontColor.value,
+				hoverColor: chartHoverColor.value,
 			},
 		},
 	};
