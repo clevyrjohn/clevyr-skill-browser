@@ -1,6 +1,5 @@
 <script>
-import { defineComponent, h } from 'vue';
-
+import { defineComponent, ref, onMounted } from 'vue';
 import { PolarArea } from 'vue-chartjs';
 import {
 	Chart as ChartJS,
@@ -10,6 +9,7 @@ import {
 	ArcElement,
 	RadialLinearScale,
 } from 'chart.js';
+import { chartJsClickableLabels } from '@/Composables/chartJsClickableLabels';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, RadialLinearScale);
 
@@ -39,6 +39,10 @@ export default defineComponent({
 			default: '',
 			type: String,
 		},
+		styles: {
+			default: () => {},
+			type: Object,
+		},
 		labels: {
 			default: () => [],
 			type: Array,
@@ -51,44 +55,37 @@ export default defineComponent({
 			default: () => [],
 			type: Array,
 		},
+		chartOptions: {
+			default: () => {},
+		},
+		plugins: {
+			default: () => [],
+		},
 	},
-	setup(props) {
-		const chartOptions = {
-			responsive: true,
-			maintainAspectRatio: false,
-			scales: {
-				r: {
-					ticks: {
-						display: false,
-						backdropColor: 'rgba(0,0,0,0)',
-						color: '#737373',
-					},
-					pointLabels: {
-						display: true,
-						centerPointLabels: true,
-						color: '#737373',
-						font: {
-							size: 16,
-							family: 'Nunito',
-						},
-					},
-				},
-			},
-			plugins: {
-				legend: {
-					display: false,
-				},
-			},
+	setup() {
+		const polarArea = ref(null);
+		onMounted(() => {
+			// console.log(polarArea.value.chart);
+			// console.log(polarArea.value.helpers); // undefined
+		});
+		return {
+			polarArea,
+			chartJsClickableLabels,
 		};
-		return () =>
-			h(PolarArea, {
-				chartData: props.chartData,
-				chartOptions,
-				chartId: props.chartId,
-				width: props.width,
-				height: props.height,
-				cssClasses: props.cssClasses,
-			});
 	},
 });
 </script>
+
+<template>
+	<PolarArea
+		ref="polarArea"
+		:chart-data="chartData"
+		:chart-options="chartOptions"
+		:chart-id="chartId"
+		:width="width"
+		:height="height"
+		:styles="styles"
+		:css-classes="cssClasses"
+		:plugins="[chartJsClickableLabels, ...plugins]"
+	/>
+</template>

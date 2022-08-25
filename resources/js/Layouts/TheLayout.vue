@@ -1,7 +1,35 @@
 <script setup>
+import { provide, computed } from 'vue';
 import { Link } from '@inertiajs/inertia-vue3';
 import ClevyrLogo from '@/Assets/ClevyrLogo.svg';
 import TransitionSlideFade from '@/Assets/TransitionSlideFade.vue';
+import { useWindowSize } from '@vueuse/core';
+import { usePreferredColorScheme } from '@vueuse/core';
+
+const preferredColor = usePreferredColorScheme();
+
+const { width: viewportWidth, height: viewportHeight } = useWindowSize();
+const currentBreakpoint = computed(() =>
+	viewportWidth.value < 640 ?
+		'xs' :
+		viewportWidth.value < 768 ?
+			'sm' :
+			viewportWidth.value < 1024 ?
+				'md' :
+				viewportWidth.value < 1280 ?
+					'lg' :
+					viewportWidth.value < 1536 ?
+						'xl' :
+						'2xl',
+);
+
+provide('windowInfo', {
+	viewportWidth,
+	viewportHeight,
+	currentBreakpoint,
+	preferredColor,
+});
+
 </script>
 
 <template>

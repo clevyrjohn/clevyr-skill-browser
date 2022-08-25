@@ -125,16 +125,16 @@ provide('tableData', {
 					</label>
 				</div>
 				<TransitionSlideFade>
-					<div class="flex flex-col space-y-4 px-[7.5%]">
-						<div class="rounded-md py-4 text-center font-serif text-2xl">
+					<div class="flex flex-col space-y-0 px-[7.5%]">
+						<div class="rounded-md pt-4 text-center font-serif text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl">
 							Categories
 						</div>
 						<CategoriesTable />
-						<div class="rounded-md pt-10 pb-4 text-center font-serif text-2xl">
+						<div class="rounded-md pt-10 pb-4 text-center font-serif text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl">
 							Skills
 						</div>
 						<SkillsTable />
-						<div class="rounded-md pt-10 pb-4 text-center font-serif text-2xl">
+						<div class="rounded-md pt-10 pb-4 text-center font-serif text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl">
 							People
 						</div>
 						<HumansTable />
