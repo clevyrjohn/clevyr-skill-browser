@@ -60,12 +60,12 @@ const chartMarginTop = computed(() =>
 		currentBreakpoint.value == 'sm' ?
 			-45 :
 			currentBreakpoint.value == 'md' ?
-				-65 :
+				-50 :
 				currentBreakpoint.value == 'lg' ?
 					-90 :
 					currentBreakpoint.value == 'xl' ?
-						-125 :
-						-150,
+						-115 :
+						-130,
 );
 
 const chartFontSize = computed(() =>
@@ -108,7 +108,7 @@ const chartData = computed(() => {
 		datasets: [
 			{
 				label: 'Company Skills by Category',
-				backgroundColor: sortedCategories.value.map((el) => hexToRgbA('#'+el.color, 0.5)),
+				backgroundColor: sortedCategories.value.map((el) => hexToRgbA('#'+el.color, 0.65)),
 				hoverBackgroundColor: sortedCategories.value.map((el) => hexToRgbA('#'+el.color, 1)),
 				data: sortedCategories.value.map((el) => el.companyTotal),
 				datalabels: {
@@ -181,7 +181,6 @@ const chartOptions = computed(() => {
 </script>
 
 <template>
-	{{ currentBreakpoint }}
 	<TransitionSlideFade>
 		<PolarAreaChart
 			v-if="isComponentMounted && isDataLoaded"
