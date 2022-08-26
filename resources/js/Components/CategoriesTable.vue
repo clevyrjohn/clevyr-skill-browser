@@ -56,16 +56,16 @@ const chartHoverColor = computed(() =>
 
 const chartMarginTop = computed(() =>
 	currentBreakpoint.value == 'xs' ?
-		-10 :
+		20 :
 		currentBreakpoint.value == 'sm' ?
-			-45 :
+			30 :
 			currentBreakpoint.value == 'md' ?
-				-50 :
+				40 :
 				currentBreakpoint.value == 'lg' ?
-					-90 :
+					50 :
 					currentBreakpoint.value == 'xl' ?
-						-115 :
-						-130,
+						60 :
+						70,
 );
 
 const chartFontSize = computed(() =>
@@ -124,6 +124,7 @@ const chartOptions = computed(() => {
 	return {
 		responsive: true,
 		maintainAspectRatio: true,
+		aspectRatio: 19.5/9,
 		onHover: (context) => {
 			context.chart.update();
 		},

@@ -33,17 +33,22 @@ provide('windowInfo', {
 </script>
 
 <template>
-	<div class="min-h-[100vh] bg-gray-200 p-6 dark:bg-gray-900">
+	<div class="min-h-[100vh] bg-gray-200 dark:bg-gray-900 sm:p-6">
 		<div class="mx-auto">
-			<Link
-				href="/"
-				class="mb-4 flex max-w-fit flex-row items-center rounded-lg bg-gray-100 p-2 pr-4 duration-75 ease-in-out hover:scale-105 active:scale-100 dark:bg-gray-900"
-			>
-				<ClevyrLogo class="m-4 mr-[0.8rem] h-10" />
-				<div class="mb-[0.1rem] font-serif text-[2.6rem] tracking-[-.005rem] text-blue-light">
-					skill browser
+			<div class="flex flex-row items-center justify-between">
+				<Link
+					href="/"
+					class="mb-4 flex max-w-fit flex-row items-center rounded-lg bg-gray-100 p-2 pr-4 duration-75 ease-in-out hover:scale-105 active:scale-100 dark:bg-gray-900"
+				>
+					<ClevyrLogo class="m-1 mr-[0.2rem] h-4 md:m-4 md:mr-[0.8rem] md:h-10" />
+					<div class="whitespace-nowrap font-serif tracking-[-.005rem] text-blue-light md:mb-[0.1rem] md:text-[2.6rem]">
+						skill browser
+					</div>
+				</Link>
+				<div class="pr-5 dark:text-white">
+					{{ currentBreakpoint }}
 				</div>
-			</Link>
+			</div>
 			<div class="rounded-md bg-white shadow-lg dark:bg-gray-800">
 				<TransitionSlideFade>
 					<div

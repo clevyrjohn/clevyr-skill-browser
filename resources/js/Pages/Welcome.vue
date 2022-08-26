@@ -86,12 +86,12 @@ provide('tableData', {
 	<Head title="Welcome" />
 	<TheLayout>
 		<div class="relative z-50 min-h-fit bg-white dark:bg-gray-700">
-			<div class="mx-auto py-8 px-1 dark:text-white sm:px-[2.5%]">
-				<div class="sticky top-0 flex w-fit flex-wrap items-center space-x-4 rounded-b-lg pt-4 pr-4 pb-2 dark:bg-gray-700">
+			<div class="mx-auto px-1 dark:text-white sm:px-[2.5%]">
+				<div class="top-0 flex flex-wrap items-center justify-start space-x-3 p-2 text-xs dark:bg-gray-700 sm:w-fit md:sticky md:justify-around md:space-x-4 md:p-4">
 					<div>Sort by</div>
 					<select
 						v-model="sortKey"
-						class="rounded-md bg-white dark:bg-gray-700"
+						class="rounded-md bg-white text-xs dark:bg-gray-700"
 					>
 						<option value="id">
 							Spreadsheet Order
@@ -103,26 +103,28 @@ provide('tableData', {
 							Total
 						</option>
 					</select>
-					<input
-						v-model="sortOrder"
-						type="radio"
-						name="sortOrder"
-						value="asc"
-					>
-					<label for="asc">
-						Asc
-					</label>
-					<input
-						v-model="sortOrder"
-						type="radio"
-						name="sortOrder"
-						value="desc"
-					>
-					<label
-						for="desc"
-					>
-						Desc
-					</label>
+					<div class="flex h-[44px] w-full flex-row items-center justify-center space-x-2 sm:w-auto">
+						<input
+							v-model="sortOrder"
+							type="radio"
+							name="sortOrder"
+							value="asc"
+						>
+						<label for="asc">
+							Asc
+						</label>
+						<input
+							v-model="sortOrder"
+							type="radio"
+							name="sortOrder"
+							value="desc"
+						>
+						<label
+							for="desc"
+						>
+							Desc
+						</label>
+					</div>
 				</div>
 				<TransitionSlideFade>
 					<div class="flex flex-col space-y-0 px-[7.5%]">

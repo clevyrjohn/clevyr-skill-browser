@@ -56,7 +56,28 @@ const sortingAlgorithm = computed(() =>
 				sortByNameAsc,
 );
 
-const chartHeight = 500;
+const chartOptions = computed(() => {
+	return {
+		responsive: true,
+		maintainAspectRatio: true,
+		aspectRatio: 19.5/9,
+		animation: true,
+		scales: {
+			x: {
+				stacked: true,
+			},
+			y: {
+				stacked: true,
+			},
+		},
+		plugins: {
+			legend: {
+				display: false,
+				position: 'bottom',
+			},
+		},
+	};
+});
 
 </script>
 
@@ -65,7 +86,7 @@ const chartHeight = 500;
 		<StackedBarChart
 			v-if="isComponentMounted && isDataLoaded"
 			:chart-data="chartData"
-			:height="chartHeight"
+			:chart-options="chartOptions"
 		/>
 		<div
 			v-else

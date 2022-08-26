@@ -41,7 +41,8 @@ const chartData = computed(() => {
 
 const chartOptions = {
 	responsive: true,
-	maintainAspectRatio: false,
+	maintainAspectRatio: true,
+	aspectRatio: 19.5/9,
 	animation: true,
 	plugins: {
 		legend: {
