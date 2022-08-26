@@ -86,8 +86,8 @@ provide('tableData', {
 	<Head title="Welcome" />
 	<TheLayout>
 		<div class="relative z-50 min-h-fit bg-white dark:bg-gray-700">
-			<div class="mx-auto py-8 px-[2.5%] dark:text-white">
-				<div class="sticky top-0 flex w-fit items-center space-x-4 rounded-b-lg pt-4 pr-4 pb-2 dark:bg-gray-700">
+			<div class="mx-auto py-8 px-1 dark:text-white sm:px-[2.5%]">
+				<div class="sticky top-0 flex w-fit flex-wrap items-center space-x-4 rounded-b-lg pt-4 pr-4 pb-2 dark:bg-gray-700">
 					<div>Sort by</div>
 					<select
 						v-model="sortKey"

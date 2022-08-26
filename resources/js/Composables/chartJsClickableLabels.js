@@ -63,7 +63,6 @@ export const chartJsClickableLabels = {
 		let datapoint = null;
 		if (evt.type == 'mousemove') {
 			if (found || points[0]) {
-				// console.log(chart.canvas.style);
 				if (found) {
 					datapoint = labelInfo.index;
 				} else {

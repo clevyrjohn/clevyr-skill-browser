@@ -1,5 +1,5 @@
 <script>
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { PolarArea } from 'vue-chartjs';
 import {
 	Chart as ChartJS,
@@ -10,6 +10,7 @@ import {
 	RadialLinearScale,
 } from 'chart.js';
 import { chartJsClickableLabels } from '@/Composables/chartJsClickableLabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, RadialLinearScale);
 
@@ -68,6 +69,7 @@ export default defineComponent({
 		return {
 			polarArea,
 			chartJsClickableLabels,
+			ChartDataLabels,
 		};
 	},
 });
@@ -83,6 +85,6 @@ export default defineComponent({
 		:height="height"
 		:styles="styles"
 		:css-classes="cssClasses"
-		:plugins="[chartJsClickableLabels, ...plugins]"
+		:plugins="[chartJsClickableLabels, ChartDataLabels, ...plugins]"
 	/>
 </template>

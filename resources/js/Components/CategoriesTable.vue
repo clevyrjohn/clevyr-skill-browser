@@ -41,36 +41,7 @@ const sortingAlgorithm = computed(() =>
 
 const sortedCategories = computed(() => [...categories.value].sort(sortingAlgorithm.value));
 
-const chartData = computed(() => {
-	return {
-		labels: sortedCategories.value.map((el) => el.name.match(/\b[\w']+(?:[^\w\n]+[\w']+){0,1}\b/g)),
-		datasets: [
-			{
-				label: 'Company Skills by Category',
-				backgroundColor: sortedCategories.value.map((el) => hexToRgbA('#'+el.color, 0.5)),
-				data: sortedCategories.value.map((el) => el.companyTotal),
-			},
-		],
-	};
-});
-
-// const chartHeight = 'auto';
-
 const { currentBreakpoint, preferredColor } = inject('windowInfo');
-
-const chartFontSize = computed(() =>
-	currentBreakpoint.value == 'xs' ?
-		9 :
-		currentBreakpoint.value == 'sm' ?
-			12 :
-			currentBreakpoint.value == 'md' ?
-				15 :
-				currentBreakpoint.value == 'lg' ?
-					22 :
-					currentBreakpoint.value == 'xl' ?
-						28 :
-						34,
-);
 
 const chartFontColor = computed(() =>
 	preferredColor.value == 'dark' ?
@@ -85,21 +56,67 @@ const chartHoverColor = computed(() =>
 
 const chartMarginTop = computed(() =>
 	currentBreakpoint.value == 'xs' ?
-		'-50px' :
+		-10 :
 		currentBreakpoint.value == 'sm' ?
-			'-55px' :
+			-45 :
 			currentBreakpoint.value == 'md' ?
-				'-65px' :
+				-65 :
 				currentBreakpoint.value == 'lg' ?
-					'-90px' :
+					-90 :
 					currentBreakpoint.value == 'xl' ?
-						'-125px' :
-						'-155px',
+						-125 :
+						-150,
+);
+
+const chartFontSize = computed(() =>
+	currentBreakpoint.value == 'xs' ?
+		8 :
+		currentBreakpoint.value == 'sm' ?
+			10 :
+			currentBreakpoint.value == 'md' ?
+				13 :
+				currentBreakpoint.value == 'lg' ?
+					18 :
+					currentBreakpoint.value == 'xl' ?
+						24 :
+						29,
+);
+
+const chartLabelPadding = computed(() =>
+	currentBreakpoint.value == 'xs' ?
+		14 :
+		currentBreakpoint.value == 'sm' ?
+			25 :
+			currentBreakpoint.value == 'md' ?
+				30 :
+				currentBreakpoint.value == 'lg' ?
+					45 :
+					currentBreakpoint.value == 'xl' ?
+						40 :
+						55,
 );
 
 const styles = computed(() => {
 	return {
-		marginTop: chartMarginTop.value,
+		marginTop: `${chartMarginTop.value}px`,
+	};
+});
+
+const chartData = computed(() => {
+	return {
+		labels: sortedCategories.value.map((el) => el.name.match(/\b[\w']+(?:[^\w\n]+[\w']+){0,1}\b/g)),
+		datasets: [
+			{
+				label: 'Company Skills by Category',
+				backgroundColor: sortedCategories.value.map((el) => hexToRgbA('#'+el.color, 0.5)),
+				hoverBackgroundColor: sortedCategories.value.map((el) => hexToRgbA('#'+el.color, 1)),
+				data: sortedCategories.value.map((el) => el.companyTotal),
+				datalabels: {
+					anchor: 'end',
+					align: 'end',
+				},
+			},
+		],
 	};
 });
 
@@ -118,6 +135,7 @@ const chartOptions = computed(() => {
 					color: [chartFontColor.value],
 				},
 				pointLabels: {
+					padding: chartLabelPadding.value,
 					display: true,
 					centerPointLabels: true,
 					color: chartFontColor.value,
@@ -132,10 +150,29 @@ const chartOptions = computed(() => {
 			legend: {
 				display: false,
 			},
+			tooltip: {
+				enabled: true,
+			},
 			chartJsClickableLabels: {
 				routeName: 'category.show',
 				tickColor: chartFontColor.value,
 				hoverColor: chartHoverColor.value,
+			},
+			datalabels: {
+				display: false,
+				backgroundColor: function(context) {
+					return context.dataset.backgroundColor;
+				},
+				borderRadius: 10,
+				// color: chartFontColor.value,
+				borderColor: '#FFF',
+				color: '#FFF',
+				borderWidth: 1,
+				offset: 25,
+				font: {
+					family: 'Nunito',
+					size: chartFontSize.value - 4,
+				},
 			},
 		},
 	};
@@ -144,6 +181,7 @@ const chartOptions = computed(() => {
 </script>
 
 <template>
+	{{ currentBreakpoint }}
 	<TransitionSlideFade>
 		<PolarAreaChart
 			v-if="isComponentMounted && isDataLoaded"
