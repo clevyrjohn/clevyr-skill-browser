@@ -13,7 +13,7 @@ module.exports = {
 	theme: {
 		fontFamily: {
 			serif: ['Museo', 'serif'],
-			sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+			sans: ['Source Sans Pro', ...defaultTheme.fontFamily.sans],
 			mono: ['SFMono-Regular', 'ui-monospace'],
 		},
 		extend: {
@@ -26,6 +26,9 @@ module.exports = {
 				blue: {
 					light: '#0072BC',
 					DEFAULT: '#162C47',
+				},
+				red: {
+					DEFAULT: '#FF3333',
 				},
 				gray: {
 					100: '#E3E3E3',

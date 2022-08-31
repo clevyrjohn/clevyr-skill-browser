@@ -6,6 +6,7 @@ import CategoriesTable from '@/Components/CategoriesTable.vue';
 import HumansTable from '../Components/HumansTable.vue';
 import SkillsTable from '../Components/SkillsTable.vue';
 import TransitionSlideFade from '@/Assets/TransitionSlideFade.vue';
+import { ChevronDownIcon } from '@heroicons/vue/solid';
 
 defineProps({
 	canLogin: Boolean,
@@ -86,24 +87,27 @@ provide('tableData', {
 	<Head title="Welcome" />
 	<TheLayout>
 		<div class="relative z-50 min-h-fit bg-white dark:bg-gray-700">
-			<div class="mx-auto px-1 dark:text-white sm:px-[2.5%]">
-				<div class="top-0 flex flex-wrap items-center justify-start space-x-3 p-2 text-xs dark:bg-gray-700 sm:w-fit md:sticky md:justify-around md:space-x-4 md:p-4">
-					<div>Sort by</div>
-					<select
-						v-model="sortKey"
-						class="rounded-md bg-white text-xs dark:bg-gray-700"
-					>
-						<option value="id">
-							Spreadsheet Order
-						</option>
-						<option value="name">
-							Name
-						</option>
-						<option value="total">
-							Total
-						</option>
-					</select>
-					<div class="flex h-[44px] w-full flex-row items-center justify-center space-x-2 sm:w-auto">
+			<div class="mx-auto dark:text-white sm:px-[2.5%]">
+				<div class="sticky top-0  flex flex-col space-y-2 p-2 text-xs dark:bg-gray-700 sm:w-fit sm:text-sm md:p-4 md:text-base">
+					<div class="flex flex-nowrap items-center justify-between sm:justify-start sm:space-x-3 md:justify-around md:space-x-4">
+						<div>
+							Sort by
+						</div>
+						<select
+							v-model="sortKey"
+							class="rounded-md bg-white text-xs dark:bg-gray-700 sm:text-sm md:text-base"
+						>
+							<option value="id">
+								Spreadsheet Order
+							</option>
+							<option value="name">
+								Name
+							</option>
+							<option value="total">
+								Total
+							</option>
+						</select>
+
 						<input
 							v-model="sortOrder"
 							type="radio"
@@ -125,7 +129,16 @@ provide('tableData', {
 							Desc
 						</label>
 					</div>
+					<div class="flex flex-row justify-between space-x-3">
+						<div>Filter</div>
+						<div>
+							Categories
+						</div>
+						<div>Skills</div>
+						<div>Humans</div>
+					</div>
 				</div>
+
 				<TransitionSlideFade>
 					<div class="flex flex-col space-y-0 px-[7.5%]">
 						<div class="rounded-md pt-4 text-center font-serif text-2xl sm:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl">

@@ -84,7 +84,7 @@ const options = {
 		datalabels: {
 			color: '#FFFFFF',
 			font: {
-				family: 'Nunito',
+				family: 'Source Sans Pro',
 				weight: 'bold',
 			},
 			formatter: function(value, context) {

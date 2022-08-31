@@ -86,7 +86,7 @@ const radarChartOptions = {
 				color: '#737373',
 				font: {
 					size: 16,
-					family: 'Nunito',
+					family: 'Source Sans Pro',
 				},
 			},
 		},
@@ -106,11 +106,11 @@ const radarChartOptions = {
 			</div>
 		</div>
 		<div class="flex flex-col py-4">
-			<RadarChart
+			<!-- <RadarChart
 				v-if="loaded"
 				:chart-data="radarChartData"
 				:chart-options="radarChartOptions"
-			/>
+			/> -->
 			<stackedBarChart
 				v-if="loaded"
 				:chart-data="barChartData"

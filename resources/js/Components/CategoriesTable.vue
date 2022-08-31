@@ -76,7 +76,7 @@ const chartFontSize = computed(() =>
 			currentBreakpoint.value == 'md' ?
 				13 :
 				currentBreakpoint.value == 'lg' ?
-					18 :
+					17 :
 					currentBreakpoint.value == 'xl' ?
 						24 :
 						29,
@@ -90,7 +90,7 @@ const chartLabelPadding = computed(() =>
 			currentBreakpoint.value == 'md' ?
 				30 :
 				currentBreakpoint.value == 'lg' ?
-					45 :
+					39 :
 					currentBreakpoint.value == 'xl' ?
 						40 :
 						55,
@@ -99,6 +99,7 @@ const chartLabelPadding = computed(() =>
 const styles = computed(() => {
 	return {
 		marginTop: `${chartMarginTop.value}px`,
+		marginBottom: '20px',
 	};
 });
 
@@ -142,7 +143,7 @@ const chartOptions = computed(() => {
 					color: chartFontColor.value,
 					font: {
 						size: chartFontSize.value,
-						family: 'Nunito',
+						family: 'Arial',
 					},
 				},
 			},
@@ -171,7 +172,7 @@ const chartOptions = computed(() => {
 				borderWidth: 1,
 				offset: 25,
 				font: {
-					family: 'Nunito',
+					family: 'Arial',
 					size: chartFontSize.value - 4,
 				},
 			},

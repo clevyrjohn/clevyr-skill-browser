@@ -38,7 +38,7 @@ provide('windowInfo', {
 			<div class="flex flex-row items-center justify-between">
 				<Link
 					href="/"
-					class="mb-4 flex max-w-fit flex-row items-center rounded-lg bg-gray-100 p-2 pr-4 duration-75 ease-in-out hover:scale-105 active:scale-100 dark:bg-gray-900"
+					class="flex max-w-fit flex-row items-center rounded-lg bg-gray-100 p-2 pr-4 duration-75 ease-in-out hover:scale-105 active:scale-100 dark:bg-gray-900 sm:mb-4"
 				>
 					<ClevyrLogo class="m-1 mr-[0.2rem] h-4 md:m-4 md:mr-[0.8rem] md:h-10" />
 					<div class="whitespace-nowrap font-serif tracking-[-.005rem] text-blue-light md:mb-[0.1rem] md:text-[2.6rem]">
@@ -53,7 +53,7 @@ provide('windowInfo', {
 				<TransitionSlideFade>
 					<div
 						v-if="$slots.default"
-						class="divide-y divide-blue p-4 dark:divide-blue-light"
+						class="divide-y divide-blue dark:divide-blue-light sm:p-4"
 					>
 						<slot />
 					</div>

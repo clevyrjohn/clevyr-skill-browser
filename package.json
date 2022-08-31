@@ -17,6 +17,7 @@
         "@inertiajs/progress": "^0.2.7",
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/typography": "^0.5.2",
+        "@types/tailwindcss__typography": "^0.5.0",
         "@vitejs/plugin-vue": "^3.0.0",
         "@vue/test-utils": "^2.0.2",
         "autoprefixer": "^10.4.7",
@@ -38,6 +39,7 @@
     },
     "name": "clevyr-skill-browser",
     "dependencies": {
+        "@heroicons/vue": "^2.0.10",
         "@vueuse/core": "^9.1.1",
         "chart.js": "^3.9.1",
         "chartjs-plugin-datalabels": "^2.1.0",
