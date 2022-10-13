@@ -55,7 +55,7 @@ jobs:
         run: |
           printf '::set-output name=dir::%s' "$(composer config cache-files-dir)"
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.11
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -76,7 +76,7 @@ jobs:
         env:
           COMPOSER_AUTH: ${{ secrets.NOVA_AUTH }}
       - name: Cache frontend dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.11
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -114,7 +114,7 @@ jobs:
         run: |
           printf '::set-output name=dir::%s' "$(composer config cache-files-dir)"
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.11
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -136,7 +136,7 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
       - name: Cache frontend dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.11
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -157,7 +157,7 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
       - name: Cache frontend dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.11
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
